@@ -14,14 +14,23 @@ const (
 	BugStatusPending BugStatus = "Pending"
 )
 
+type BugPriority string
+
+const (
+	BugPriorityLow    BugPriority = "Low"
+	BugPriorityMedium BugPriority = "Medium"
+	BugPriorityHigh   BugPriority = "High"
+)
+
 type Bug struct {
-	ID          string    `json:"id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Status      BugStatus `json:"status"`
-	Assignee    string    `json:"asignee"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
+	ID          string      `json:"id"`
+	Title       string      `json:"title"`
+	Description string      `json:"description"`
+	Status      BugStatus   `json:"status"`
+	Priority    BugPriority `json:"priority"`
+	Assignee    string      `json:"asignee"`
+	CreatedAt   time.Time   `json:"createdAt"`
+	UpdatedAt   time.Time   `json:"updatedAt"`
 }
 
 func NewBug(title, description string) *Bug {
