@@ -1,25 +1,25 @@
-package infrastructure
+package repository
 
 import (
 	"bugtracker/internal/database"
-	"bugtracker/internal/user/domain"
+	"bugtracker/internal/domain/user/aggregate"
 	"context"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
 )
 
-type UserRepository struct {
+type PostgresUserRepository struct {
 	db database.PostgresDB
 }
 
-func NewUserRepository(db database.PostgresDB) *UserRepository {
-	return &UserRepository{
+func NewPostgresUserRepository(db database.PostgresDB) *PostgresUserRepository {
+	return &PostgresUserRepository{
 		db: db,
 	}
 }
 
-func (r *UserRepository) SaveUser(ctx context.Context, user domain.User) error {
+func (r *PostgresUserRepository) SaveUser(ctx context.Context, user aggregate.User) error {
 	sql, args, err := sq.Insert("users").
 		Columns("id", "username", "email", "password", "createdAt", "updatedAt").
 		Values(user.ID, user.Username, user.Email, user.Password, user.CreatedAt, user.UpdatedAt).
@@ -36,8 +36,8 @@ func (r *UserRepository) SaveUser(ctx context.Context, user domain.User) error {
 	return nil
 }
 
-func (r *UserRepository) GetUserByID(ctx context.Context, userID string) (*domain.User, error) {
-	var user domain.User
+func (r *PostgresUserRepository) GetUserByID(ctx context.Context, userID string) (*aggregate.User, error) {
+	var user aggregate.User
 	sql, _, err := sq.Select("*").From("users").Where(sq.Eq{"id": userID}).ToSql()
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (r *UserRepository) GetUserByID(ctx context.Context, userID string) (*domai
 	return &user, nil
 }
 
-func (r *UserRepository) UpdateUser(ctx context.Context, user domain.User) error {
+func (r *PostgresUserRepository) UpdateUser(ctx context.Context, user aggregate.User) error {
 	sql, args, err := sq.Update("users").
 		Set("username", user.Username).
 		Set("password", user.Password).
@@ -71,7 +71,7 @@ func (r *UserRepository) UpdateUser(ctx context.Context, user domain.User) error
 	return nil
 }
 
-func (r *UserRepository) DeleteUser(ctx context.Context, userID string) error {
+func (r *PostgresUserRepository) DeleteUser(ctx context.Context, userID string) error {
 	sql, args, err := sq.Delete("users").Where(sq.Eq{"id": userID}).ToSql()
 	if err != nil {
 		return err

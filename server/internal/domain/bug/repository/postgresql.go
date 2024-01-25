@@ -1,24 +1,24 @@
-package infrastructure
+package repository
 
 import (
-	"bugtracker/internal/bug/domain"
 	"bugtracker/internal/database"
+	"bugtracker/internal/domain/bug/aggregate"
 	"context"
 
 	sq "github.com/Masterminds/squirrel"
 )
 
-type BugRepository struct {
+type PostgresBugRepository struct {
 	db database.PostgresDB
 }
 
-func NewBugRepository(db database.PostgresDB) *BugRepository {
-	return &BugRepository{
+func NewPostgresBugRepository(db database.PostgresDB) *PostgresBugRepository {
+	return &PostgresBugRepository{
 		db: db,
 	}
 }
 
-func (r *BugRepository) SaveBug(ctx context.Context, bug *domain.Bug) error {
+func (r *PostgresBugRepository) SaveBug(ctx context.Context, bug *aggregate.Bug) error {
 	sql, args, err := sq.Insert("bugs").
 		Columns("id", "title", "description", "status", "priority", "assignee", "created_at", "updated_at").
 		Values(bug.ID, bug.Title, bug.Description, bug.Status, bug.Priority, bug.Assignee, bug.CreatedAt, bug.UpdatedAt).
@@ -35,8 +35,8 @@ func (r *BugRepository) SaveBug(ctx context.Context, bug *domain.Bug) error {
 	return nil
 }
 
-func (r *BugRepository) GetBugByID(ctx context.Context, bugID string) (*domain.Bug, error) {
-	var bug domain.Bug
+func (r *PostgresBugRepository) GetBugByID(ctx context.Context, bugID string) (*aggregate.Bug, error) {
+	var bug aggregate.Bug
 	sql, _, err := sq.Select("*").From("bugs").Where(sq.Eq{"id": bugID}).ToSql()
 	if err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (r *BugRepository) GetBugByID(ctx context.Context, bugID string) (*domain.B
 	return &bug, nil
 }
 
-func (r *BugRepository) UpdateBug(ctx context.Context, bug *domain.Bug) error {
+func (r *PostgresBugRepository) UpdateBug(ctx context.Context, bug *aggregate.Bug) error {
 	sql, args, err := sq.Update("bugs").
 		Set("title", bug.Title).
 		Set("description", bug.Description).
@@ -72,7 +72,7 @@ func (r *BugRepository) UpdateBug(ctx context.Context, bug *domain.Bug) error {
 	return nil
 }
 
-func (r *BugRepository) DeleteBug(ctx context.Context, bugID string) error {
+func (r *PostgresBugRepository) DeleteBug(ctx context.Context, bugID string) error {
 	sql, args, err := sq.Delete("bugs").Where(sq.Eq{"id": bugID}).ToSql()
 
 	if err != nil {
