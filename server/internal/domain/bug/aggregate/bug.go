@@ -14,16 +14,35 @@ type Bug struct {
 	Status      entity.BugStatus   `json:"status"`
 	Priority    entity.BugPriority `json:"priority"`
 	Assignee    string             `json:"asignee"`
-	Comments    *[]entity.Comment  `json:"comments"`
+	Comments    []entity.Comment   `json:"comments"`
 	CreatedAt   time.Time          `json:"createdAt"`
 	UpdatedAt   time.Time          `json:"updatedAt"`
 }
 
-func NewBug(title, description string) *Bug {
+type CreateBugRequest struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}
+
+type UpdateBugRequest struct {
+	ID          string             `json:"id"`
+	Title       string             `json:"title"`
+	Description string             `json:"description"`
+	Status      entity.BugStatus   `json:"status"`
+	Priority    entity.BugPriority `json:"priority"`
+	Assignee    string             `json:"asignee"`
+	UpdatedAt   time.Time          `json:"-"`
+}
+
+type UpdateBugPriority struct {
+	Priority entity.BugPriority `json:"priority"`
+}
+
+func NewBug(req CreateBugRequest) *Bug {
 	return &Bug{
 		ID:          generateUniqueID(),
-		Title:       title,
-		Description: description,
+		Title:       req.Title,
+		Description: req.Description,
 		Status:      entity.BugStatusOpen,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
