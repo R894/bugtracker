@@ -15,12 +15,27 @@ type User struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-func NewUser(username, email, password string) *User {
+type UserLoginModel struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type UserRegisterModel struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type UserViewModel struct {
+	Username string `json:"username"`
+}
+
+func NewUser(reg UserRegisterModel) *User {
 	return &User{
 		ID:        generateUniqueID(),
-		Username:  username,
-		Email:     email,
-		Password:  hashPassword(password),
+		Username:  reg.Username,
+		Email:     reg.Email,
+		Password:  hashPassword(reg.Password),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
