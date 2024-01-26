@@ -50,7 +50,7 @@ func (r *PostgresBugRepository) GetBugByID(ctx context.Context, bugID string) (*
 	return &bug, nil
 }
 
-func (r *PostgresBugRepository) UpdateBug(ctx context.Context, bug *aggregate.Bug) error {
+func (r *PostgresBugRepository) UpdateBug(ctx context.Context, bug *aggregate.UpdateBugRequest) error {
 	sql, args, err := sq.Update("bugs").
 		Set("title", bug.Title).
 		Set("description", bug.Description).

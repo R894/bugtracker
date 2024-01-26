@@ -1,6 +1,7 @@
 package service
 
 import (
+	"bugtracker/internal/database"
 	"bugtracker/internal/domain/user/aggregate"
 	"bugtracker/internal/domain/user/repository"
 	"context"
@@ -10,14 +11,14 @@ type UserService struct {
 	userRepository repository.UserRepository
 }
 
-func NewUserService(userRepository repository.UserRepository) *UserService {
+func NewUserService(db database.PostgresDB) *UserService {
 	return &UserService{
-		userRepository: userRepository,
+		userRepository: repository.NewPostgresUserRepository(db),
 	}
 }
 
-func (s *UserService) CreateUser(ctx context.Context, username, email, password string) error {
-	usr := aggregate.NewUser(username, email, password)
+func (s *UserService) CreateUser(ctx context.Context, registerRequest aggregate.UserRegisterModel) error {
+	usr := aggregate.NewUser(registerRequest)
 	err := s.userRepository.SaveUser(ctx, *usr)
 	if err != nil {
 		return err
