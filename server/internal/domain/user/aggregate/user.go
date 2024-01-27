@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
@@ -31,11 +32,16 @@ type UserViewModel struct {
 }
 
 func NewUser(reg UserRegisterModel) *User {
+	hashedPassword, err := hashPassword(reg.Password)
+	if err != nil {
+		panic(err)
+	}
+
 	return &User{
 		ID:        generateUniqueID(),
 		Username:  reg.Username,
 		Email:     reg.Email,
-		Password:  hashPassword(reg.Password),
+		Password:  hashedPassword,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
@@ -47,13 +53,18 @@ func (u *User) UpdateEmail(email string) {
 }
 
 func (u *User) UpdatePassword(password string) {
-	u.Password = hashPassword(password)
+	hashedPassword, err := hashPassword(password)
+	if err != nil {
+		panic(err)
+	}
+	u.Password = hashedPassword
 	u.UpdatedAt = time.Now()
 }
 
-func hashPassword(password string) string {
-	// TODO: implement hashing
-	return password
+func hashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(bytes), err
+
 }
 
 func generateUniqueID() string {
