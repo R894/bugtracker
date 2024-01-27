@@ -14,7 +14,6 @@ type Bug struct {
 	Status      entity.BugStatus   `json:"status"`
 	Priority    entity.BugPriority `json:"priority"`
 	Assignee    string             `json:"asignee"`
-	Comments    []entity.Comment   `json:"comments"`
 	CreatedAt   time.Time          `json:"createdAt"`
 	UpdatedAt   time.Time          `json:"updatedAt"`
 }
