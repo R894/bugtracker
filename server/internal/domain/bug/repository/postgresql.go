@@ -9,10 +9,10 @@ import (
 )
 
 type PostgresBugRepository struct {
-	db database.PostgresDB
+	db *database.PostgresDB
 }
 
-func NewPostgresBugRepository(db database.PostgresDB) *PostgresBugRepository {
+func NewPostgresBugRepository(db *database.PostgresDB) *PostgresBugRepository {
 	return &PostgresBugRepository{
 		db: db,
 	}
@@ -48,6 +48,45 @@ func (r *PostgresBugRepository) GetBugByID(ctx context.Context, bugID string) (*
 	}
 
 	return &bug, nil
+}
+
+func (r *PostgresBugRepository) GetBugs(ctx context.Context) ([]aggregate.Bug, error) {
+	sql, args, err := sq.Select("*").From("bugs").ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := r.db.Db.QueryContext(ctx, sql, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// TODO: refactor this dumpsterfuck
+	var bugs []aggregate.Bug
+	for rows.Next() {
+		var bug aggregate.Bug
+		err := rows.Scan(
+			&bug.ID,
+			&bug.Title,
+			&bug.Description,
+			&bug.Status,
+			&bug.Priority,
+			&bug.Assignee,
+			&bug.CreatedAt,
+			&bug.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		bugs = append(bugs, bug)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return bugs, nil
 }
 
 func (r *PostgresBugRepository) UpdateBug(ctx context.Context, bug *aggregate.UpdateBugRequest) error {

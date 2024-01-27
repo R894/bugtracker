@@ -11,7 +11,7 @@ type BugService struct {
 	bugRepository repository.BugRepository
 }
 
-func NewBugService(db database.PostgresDB) *BugService {
+func NewBugService(db *database.PostgresDB) *BugService {
 	return &BugService{
 		bugRepository: repository.NewPostgresBugRepository(db),
 	}
@@ -24,6 +24,15 @@ func (s *BugService) CreateBug(ctx context.Context, req aggregate.CreateBugReque
 		return nil, err
 	}
 	return bug, nil
+}
+
+func (s *BugService) GetBugs(ctx context.Context) ([]aggregate.Bug, error) {
+	bugs, err := s.bugRepository.GetBugs(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return bugs, nil
 }
 
 func (s *BugService) GetBugByID(ctx context.Context, bugID string) (*aggregate.Bug, error) {

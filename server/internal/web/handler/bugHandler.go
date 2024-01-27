@@ -15,7 +15,7 @@ type BugHandler struct {
 	service *service.BugService
 }
 
-func NewBugHandler(db database.PostgresDB) *BugHandler {
+func NewBugHandler(db *database.PostgresDB) *BugHandler {
 	return &BugHandler{
 		service: service.NewBugService(db),
 	}
@@ -37,8 +37,17 @@ func (b *BugHandler) CreateNewBug(w http.ResponseWriter, r *http.Request) {
 func (b *BugHandler) GetBugByID(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	ctx := r.Context()
-	b.service.GetBugByID(ctx, id)
-	response.OK(w)
+	bug, err := b.service.GetBugByID(ctx, id)
+	if err != nil {
+		response.BadRequest(w)
+		return
+	}
+	response.JSON(w, http.StatusOK, bug)
+}
+
+func (b *BugHandler) GetBugs(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	b.service.GetBugs(ctx)
 }
 
 func (b *BugHandler) UpdateBug(w http.ResponseWriter, r *http.Request) {
