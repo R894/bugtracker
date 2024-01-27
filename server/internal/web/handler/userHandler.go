@@ -15,7 +15,7 @@ type UserHandler struct {
 	service *service.UserService
 }
 
-func NewUserHandler(db database.PostgresDB) *UserHandler {
+func NewUserHandler(db *database.PostgresDB) *UserHandler {
 	return &UserHandler{
 		service: service.NewUserService(db),
 	}
