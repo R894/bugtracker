@@ -10,10 +10,10 @@ import (
 )
 
 type PostgresUserRepository struct {
-	db database.PostgresDB
+	db *database.PostgresDB
 }
 
-func NewPostgresUserRepository(db database.PostgresDB) *PostgresUserRepository {
+func NewPostgresUserRepository(db *database.PostgresDB) *PostgresUserRepository {
 	return &PostgresUserRepository{
 		db: db,
 	}

@@ -11,7 +11,7 @@ type UserService struct {
 	userRepository repository.UserRepository
 }
 
-func NewUserService(db database.PostgresDB) *UserService {
+func NewUserService(db *database.PostgresDB) *UserService {
 	return &UserService{
 		userRepository: repository.NewPostgresUserRepository(db),
 	}
