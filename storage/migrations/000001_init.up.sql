@@ -1,0 +1,27 @@
+CREATE TABLE IF NOT EXISTS bugs (
+    id          VARCHAR(36) PRIMARY KEY,
+    title       VARCHAR(255) NOT NULL,
+    description TEXT,
+    status      VARCHAR(20) NOT NULL,
+    priority    VARCHAR(20) NOT NULL,
+    assignee    VARCHAR(255),
+    created_at  TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS comments (
+    id         VARCHAR(36) PRIMARY KEY,
+    bug_id     VARCHAR(36) REFERENCES bugs(id) ON DELETE CASCADE,
+    content    TEXT,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    id         VARCHAR(36) PRIMARY KEY,
+    username   VARCHAR(255) NOT NULL,
+    email      VARCHAR(255) NOT NULL,
+    password   VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
