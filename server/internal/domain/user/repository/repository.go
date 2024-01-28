@@ -8,6 +8,7 @@ import (
 type UserRepository interface {
 	SaveUser(ctx context.Context, user aggregate.User) error
 	GetUserByID(ctx context.Context, userID string) (*aggregate.User, error)
+	GetUsers(ctx context.Context) ([]aggregate.User, error)
 	UpdateUser(ctx context.Context, user aggregate.User) error
 	DeleteUser(ctx context.Context, userID string) error
 }

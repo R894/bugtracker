@@ -43,12 +43,48 @@ func (r *PostgresUserRepository) GetUserByID(ctx context.Context, userID string)
 		return nil, err
 	}
 
-	err = r.db.Db.QueryRow(sql).Scan(&user)
+	err = r.db.Db.QueryRowContext(ctx, sql).Scan(&user)
 	if err != nil {
 		return nil, err
 	}
 
 	return &user, nil
+}
+
+func (r *PostgresUserRepository) GetUsers(ctx context.Context) ([]aggregate.User, error) {
+	sql, args, err := sq.Select("*").From("users").ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := r.db.Db.QueryContext(ctx, sql, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// TODO: refactor this dumpsterfuck
+	var users []aggregate.User
+	for rows.Next() {
+		var user aggregate.User
+		err := rows.Scan(
+			&user.ID,
+			&user.Email,
+			&user.Password,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }
 
 func (r *PostgresUserRepository) UpdateUser(ctx context.Context, user aggregate.User) error {
