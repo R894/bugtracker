@@ -14,8 +14,8 @@ type Comment struct {
 	UpdatedAt time.Time
 }
 
-func NewComment(bugId, content string) *Comment {
-	return &Comment{
+func NewComment(bugId, content string) Comment {
+	return Comment{
 		ID:        generateUniqueID(),
 		BugId:     bugId,
 		Content:   content,
