@@ -38,12 +38,9 @@ func (r *PostgresUserRepository) SaveUser(ctx context.Context, user aggregate.Us
 
 func (r *PostgresUserRepository) GetUserByID(ctx context.Context, userID string) (*aggregate.User, error) {
 	var user aggregate.User
-	sql, _, err := sq.Select("*").From("users").Where(sq.Eq{"id": userID}).ToSql()
-	if err != nil {
-		return nil, err
-	}
+	query := sq.Select("*").From("users").Where(sq.Eq{"id": userID}).PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
 
-	err = r.db.Db.QueryRowContext(ctx, sql).Scan(&user)
+	err := query.QueryRowContext(ctx).Scan(&user)
 	if err != nil {
 		return nil, err
 	}
@@ -52,12 +49,9 @@ func (r *PostgresUserRepository) GetUserByID(ctx context.Context, userID string)
 }
 
 func (r *PostgresUserRepository) GetUsers(ctx context.Context) ([]aggregate.User, error) {
-	sql, args, err := sq.Select("*").From("users").ToSql()
-	if err != nil {
-		return nil, err
-	}
+	query := sq.Select("*").From("users").PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
 
-	rows, err := r.db.Db.QueryContext(ctx, sql, args...)
+	rows, err := query.QueryContext(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -88,18 +82,15 @@ func (r *PostgresUserRepository) GetUsers(ctx context.Context) ([]aggregate.User
 }
 
 func (r *PostgresUserRepository) UpdateUser(ctx context.Context, user aggregate.User) error {
-	sql, args, err := sq.Update("users").
+	query := sq.Update("users").
 		Set("username", user.Username).
 		Set("password", user.Password).
 		Set("email", user.Email).
 		Set("updatedAt", time.Now()).
 		Where(sq.Eq{"id": user.ID}).
-		ToSql()
-	if err != nil {
-		return err
-	}
+		PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
 
-	_, err = r.db.Db.ExecContext(ctx, sql, args...)
+	_, err := query.ExecContext(ctx)
 	if err != nil {
 		return err
 	}
@@ -108,12 +99,9 @@ func (r *PostgresUserRepository) UpdateUser(ctx context.Context, user aggregate.
 }
 
 func (r *PostgresUserRepository) DeleteUser(ctx context.Context, userID string) error {
-	sql, args, err := sq.Delete("users").Where(sq.Eq{"id": userID}).ToSql()
-	if err != nil {
-		return err
-	}
+	query := sq.Delete("users").Where(sq.Eq{"id": userID}).PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
 
-	_, err = r.db.Db.ExecContext(ctx, sql, args...)
+	_, err := query.ExecContext(ctx)
 	if err != nil {
 		return err
 	}
