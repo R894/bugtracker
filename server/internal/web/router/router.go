@@ -8,14 +8,13 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-func SetupRouter() *chi.Mux {
-	db, err := database.NewPostgresDB()
-	if err != nil {
-		panic(err)
-	}
+func SetupRouter(db *database.PostgresDB) (*chi.Mux, error) {
 
 	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
 
 	bugHandler := handler.NewBugHandler(db)
 	userHandler := handler.NewUserHandler(db)
@@ -32,5 +31,5 @@ func SetupRouter() *chi.Mux {
 		r.Get("/{userId}", userHandler.GetUserById)
 	})
 
-	return r
+	return r, nil
 }
