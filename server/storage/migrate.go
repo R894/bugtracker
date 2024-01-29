@@ -1,31 +1,28 @@
 package storage
 
 import (
-	"fmt"
+	"database/sql"
 	"log"
-	"os"
 
 	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-func Migrate() {
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	dbname := os.Getenv("DB_NAME")
+func Migrate(db *sql.DB) {
+	driver, err := postgres.WithInstance(db, &postgres.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	psqlconn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
-
-	m, err := migrate.New(
+	m, err := migrate.NewWithDatabaseInstance(
 		"file://storage/migrations",
-		psqlconn)
+		"postgres", driver)
 	if err != nil {
 		log.Fatal(err)
 	}
 	if err := m.Up(); err != nil {
 		log.Fatal(err)
 	}
+	m.Up()
 }
