@@ -6,7 +6,6 @@ import (
 	"bugtracker/internal/domain/bug/service"
 	"bugtracker/internal/web/response"
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -31,13 +30,12 @@ func (b *BugHandler) CreateNewBug(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = b.service.CreateBug(ctx, createBugReq)
+	bug, err := b.service.CreateBug(ctx, createBugReq)
 	if err != nil {
-		log.Println(err)
-		response.BadRequest(w)
+		response.InternalError(w)
 		return
 	}
-	response.Created(w)
+	response.JSON(w, http.StatusCreated, bug)
 }
 
 func (b *BugHandler) GetBugByID(w http.ResponseWriter, r *http.Request) {
@@ -69,6 +67,9 @@ func (b *BugHandler) UpdateBug(w http.ResponseWriter, r *http.Request) {
 		response.BadRequest(w)
 		return
 	}
-	b.service.UpdateBug(ctx, &updateBugRequest)
+	err = b.service.UpdateBug(ctx, &updateBugRequest)
+	if err != nil {
+		response.InternalError(w)
+	}
 	response.OK(w)
 }
