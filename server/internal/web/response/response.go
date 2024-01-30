@@ -49,6 +49,10 @@ func BadRequest(w http.ResponseWriter) {
 	Error(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
 }
 
+func Unauthorized(w http.ResponseWriter) {
+	Error(w, http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized))
+}
+
 func Forbidden(w http.ResponseWriter) {
 	Error(w, http.StatusForbidden, http.StatusText(http.StatusForbidden))
 }
