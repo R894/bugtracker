@@ -30,6 +30,10 @@ func (s *UserService) GetUserByID(ctx context.Context, id string) (*aggregate.Us
 	return s.userRepository.GetUserByID(ctx, id)
 }
 
+func (s *UserService) GetUserByEmail(ctx context.Context, email string) (*aggregate.User, error) {
+	return s.userRepository.GetUserByEmail(ctx, email)
+}
+
 func (s *UserService) UpdateUser(ctx context.Context, user aggregate.User) error {
 	return s.userRepository.UpdateUser(ctx, user)
 }

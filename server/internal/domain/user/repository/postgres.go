@@ -48,6 +48,18 @@ func (r *PostgresUserRepository) GetUserByID(ctx context.Context, userID string)
 	return &user, nil
 }
 
+func (r *PostgresUserRepository) GetUserByEmail(ctx context.Context, userEmail string) (*aggregate.User, error) {
+	var user aggregate.User
+	query := sq.Select("*").From("users").Where(sq.Eq{"email": userEmail}).PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
+
+	err := query.QueryRowContext(ctx).Scan(&user)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 func (r *PostgresUserRepository) GetUsers(ctx context.Context) ([]aggregate.User, error) {
 	query := sq.Select("*").From("users").PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
 
