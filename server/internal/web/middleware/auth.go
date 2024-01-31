@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"bugtracker/internal/web/response"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -10,8 +11,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/golang-jwt/jwt/v5"
 )
-
-var secretKey = os.Getenv("JWT_SECRET")
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -46,6 +45,7 @@ func extractToken(r *http.Request) string {
 }
 
 func verifyToken(tokenString string) bool {
+	secretKey := os.Getenv("JWT_SECRET")
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil
 	})
@@ -62,14 +62,16 @@ func verifyToken(tokenString string) bool {
 }
 
 func CreateToken(username string) (string, error) {
+	secretKey := os.Getenv("JWT_SECRET")
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"username": username,
 			"exp":      time.Now().Add(time.Hour * 24).Unix(),
 		})
 
-	tokenString, err := token.SignedString(secretKey)
+	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {
+		log.Println("Error creating token:", err)
 		return "", err
 	}
 

@@ -4,6 +4,7 @@ import (
 	"bugtracker/internal/database"
 	"bugtracker/internal/web/router"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 )
@@ -19,10 +20,9 @@ func StartServer(db *database.PostgresDB) error {
 		return err
 	}
 	address := fmt.Sprintf(":%s", port)
-
+	log.Println("Starting server on address ", address)
 	if err := http.ListenAndServe(address, r); err != nil {
 		return err
 	}
-
 	return nil
 }
