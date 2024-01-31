@@ -3,6 +3,7 @@ package main
 import (
 	"bugtracker/internal/database"
 	"bugtracker/internal/web"
+	"bugtracker/storage"
 	"log"
 
 	"github.com/joho/godotenv"
@@ -18,7 +19,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// storage.Migrate(db.Db)
+	storage.Migrate(db.Db)
 
 	err = web.StartServer(db)
 	if err != nil {
