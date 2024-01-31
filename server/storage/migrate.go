@@ -22,7 +22,7 @@ func Migrate(db *sql.DB) {
 		log.Fatal(err)
 	}
 	if err := m.Up(); err != nil {
-		log.Fatal(err)
+		log.Println("No change in Schema...")
+		log.Println("Continuing...")
 	}
-	m.Up()
 }
