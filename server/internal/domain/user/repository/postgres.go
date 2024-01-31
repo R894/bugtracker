@@ -20,15 +20,12 @@ func NewPostgresUserRepository(db *database.PostgresDB) *PostgresUserRepository 
 }
 
 func (r *PostgresUserRepository) SaveUser(ctx context.Context, user aggregate.User) error {
-	sql, args, err := sq.Insert("users").
-		Columns("id", "username", "email", "password", "createdAt", "updatedAt").
+	query := sq.Insert("users").
+		Columns("id", "username", "email", "password", "created_at", "updated_at").
 		Values(user.ID, user.Username, user.Email, user.Password, user.CreatedAt, user.UpdatedAt).
-		ToSql()
+		PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
 
-	if err != nil {
-		return err
-	}
-	_, err = r.db.Db.ExecContext(ctx, sql, args...)
+	_, err := query.ExecContext(ctx)
 	if err != nil {
 		return err
 	}
@@ -75,6 +72,7 @@ func (r *PostgresUserRepository) GetUsers(ctx context.Context) ([]aggregate.User
 		var user aggregate.User
 		err := rows.Scan(
 			&user.ID,
+			&user.Username,
 			&user.Email,
 			&user.Password,
 			&user.CreatedAt,
