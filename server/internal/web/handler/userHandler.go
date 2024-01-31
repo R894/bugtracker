@@ -64,6 +64,17 @@ func (u *UserHandler) UserLogin(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, token)
 }
 
+func (u *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	users, err := u.service.GetUsers(ctx)
+
+	if err != nil {
+		response.InternalError(w)
+		return
+	}
+	response.JSON(w, http.StatusOK, users)
+}
+
 func (u *UserHandler) GetUserById(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	ctx := r.Context()

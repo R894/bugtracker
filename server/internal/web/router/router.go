@@ -26,8 +26,9 @@ func SetupRouter(db *database.PostgresDB) (*chi.Mux, error) {
 	})
 
 	r.Route("/users", func(r chi.Router) {
-		r.Get("/", userHandler.CreateNewUser)
+		r.Get("/", userHandler.GetUsers)
 		r.Post("/", userHandler.CreateNewUser)
+		r.Post("/login", userHandler.UserLogin)
 		r.Get("/{userId}", userHandler.GetUserById)
 	})
 
