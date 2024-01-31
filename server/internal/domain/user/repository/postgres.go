@@ -4,6 +4,7 @@ import (
 	"bugtracker/internal/database"
 	"bugtracker/internal/domain/user/aggregate"
 	"context"
+	"log"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
@@ -49,8 +50,14 @@ func (r *PostgresUserRepository) GetUserByEmail(ctx context.Context, userEmail s
 	var user aggregate.User
 	query := sq.Select("*").From("users").Where(sq.Eq{"email": userEmail}).PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
 
-	err := query.QueryRowContext(ctx).Scan(&user)
+	err := query.QueryRowContext(ctx).Scan(&user.ID,
+		&user.Username,
+		&user.Email,
+		&user.Password,
+		&user.CreatedAt,
+		&user.UpdatedAt)
 	if err != nil {
+		log.Println("Error getting user by email", err)
 		return nil, err
 	}
 
