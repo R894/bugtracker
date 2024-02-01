@@ -38,7 +38,19 @@ func (r *PostgresUserRepository) GetUserByID(ctx context.Context, userID string)
 	var user aggregate.User
 	query := sq.Select("*").From("users").Where(sq.Eq{"id": userID}).PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
 
-	err := query.QueryRowContext(ctx).Scan(&user)
+	err := query.QueryRowContext(ctx).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (r *PostgresUserRepository) GetUserByName(ctx context.Context, username string) (*aggregate.User, error) {
+	var user aggregate.User
+	query := sq.Select("*").From("users").Where(sq.Eq{"username": username}).PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
+
+	err := query.QueryRowContext(ctx).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
