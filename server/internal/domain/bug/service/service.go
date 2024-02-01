@@ -46,3 +46,7 @@ func (s *BugService) UpdateBug(ctx context.Context, bug *aggregate.UpdateBugRequ
 func (s *BugService) DeleteBug(ctx context.Context, bugID string) error {
 	return s.bugRepository.DeleteBug(ctx, bugID)
 }
+
+func (s *BugService) AssignBugTo(ctx context.Context, bugId, username string) error {
+	return s.bugRepository.AssignBugTo(ctx, bugId, username)
+}
