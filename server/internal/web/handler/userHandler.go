@@ -61,7 +61,7 @@ func (u *UserHandler) UserLogin(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.InternalError(w)
 	}
-	response.JSON(w, http.StatusOK, token)
+	response.JSON(w, http.StatusOK, map[string]string{"token": token})
 }
 
 func (u *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
@@ -76,8 +76,14 @@ func (u *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *UserHandler) GetUserById(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
+	id := chi.URLParam(r, "userId")
 	ctx := r.Context()
-	u.service.GetUserByID(ctx, id)
-	response.OK(w)
+
+	user, err := u.service.GetUserByID(ctx, id)
+	if err != nil {
+		response.NotFound(w)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, user)
 }
