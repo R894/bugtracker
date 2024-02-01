@@ -36,7 +36,7 @@ func (r *PostgresBugRepository) GetBugByID(ctx context.Context, bugID string) (*
 	var bug aggregate.Bug
 	query := sq.Select("*").From("bugs").Where(sq.Eq{"id": bugID}).PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
 
-	err := query.QueryRow().Scan(&bug)
+	err := query.QueryRow().Scan(&bug.ID, &bug.Title, &bug.Description, &bug.Status, &bug.Priority, &bug.Assignee, &bug.CreatedAt, &bug.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -89,6 +89,20 @@ func (r *PostgresBugRepository) UpdateBug(ctx context.Context, bug *aggregate.Up
 		Set("assignee", bug.Assignee).
 		Set("updated_at", bug.UpdatedAt).
 		Where(sq.Eq{"id": bug.ID}).
+		PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
+
+	_, err := query.ExecContext(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *PostgresBugRepository) AssignBugTo(ctx context.Context, bugId, username string) error {
+	query := sq.Update("bugs").
+		Set("assignee", username).
+		Where(sq.Eq{"id": bugId}).
 		PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
 
 	_, err := query.ExecContext(ctx)
