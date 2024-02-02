@@ -47,7 +47,7 @@ func extractToken(r *http.Request) string {
 func verifyToken(tokenString string) bool {
 	secretKey := os.Getenv("JWT_SECRET")
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return secretKey, nil
+		return []byte(secretKey), nil
 	})
 
 	if err != nil {
@@ -78,6 +78,6 @@ func CreateToken(username string) (string, error) {
 	return tokenString, nil
 }
 
-func ApplyAuthMiddleware(r *chi.Mux) {
+func ApplyAuthMiddleware(r chi.Router) {
 	r.Use(AuthMiddleware)
 }
