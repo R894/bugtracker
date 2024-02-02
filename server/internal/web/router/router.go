@@ -4,6 +4,8 @@ import (
 	"bugtracker/internal/database"
 	"bugtracker/internal/web/handler"
 
+	mw "bugtracker/internal/web/middleware"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -20,16 +22,17 @@ func SetupRouter(db *database.PostgresDB) (*chi.Mux, error) {
 	userHandler := handler.NewUserHandler(db)
 
 	r.Route("/bugs", func(r chi.Router) {
+		mw.ApplyAuthMiddleware(r)
 		r.Get("/", bugHandler.GetBugs)
 		r.Post("/", bugHandler.CreateNewBug)
 		r.Get("/{bugId}", bugHandler.GetBugByID)
 	})
 
 	r.Route("/users", func(r chi.Router) {
-		r.Get("/", userHandler.GetUsers)
+		r.With(mw.AuthMiddleware).Get("/", userHandler.GetUsers)
 		r.Post("/", userHandler.CreateNewUser)
 		r.Post("/login", userHandler.UserLogin)
-		r.Get("/{userId}", userHandler.GetUserById)
+		r.With(mw.AuthMiddleware).Get("/{userId}", userHandler.GetUserById)
 	})
 
 	return r, nil
