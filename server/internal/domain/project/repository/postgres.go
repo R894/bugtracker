@@ -31,7 +31,7 @@ func (r *PostgresProjectRepository) Save(ctx context.Context, name, description,
 	return project, nil
 }
 
-func (r *PostgresProjectRepository) GetProjectsByUserId(ctx context.Context, userId string) ([]aggregate.Project, error) {
+func (r *PostgresProjectRepository) GetProjectsByOwnerId(ctx context.Context, userId string) ([]aggregate.Project, error) {
 	query := sq.Select("*").From("projects").Where(sq.Eq{"owner_id": userId}).PlaceholderFormat(sq.Dollar).RunWith(r.db)
 
 	rows, err := query.QueryContext(ctx)
