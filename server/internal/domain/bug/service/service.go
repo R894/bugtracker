@@ -1,17 +1,17 @@
 package service
 
 import (
-	"bugtracker/internal/database"
 	"bugtracker/internal/domain/bug/aggregate"
 	"bugtracker/internal/domain/bug/repository"
 	"context"
+	"database/sql"
 )
 
 type BugService struct {
 	bugRepository repository.BugRepository
 }
 
-func NewBugService(db *database.PostgresDB) *BugService {
+func NewBugService(db *sql.DB) *BugService {
 	return &BugService{
 		bugRepository: repository.NewPostgresBugRepository(db),
 	}

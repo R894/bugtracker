@@ -1,8 +1,8 @@
 package router
 
 import (
-	"bugtracker/internal/database"
 	"bugtracker/internal/web/handler"
+	"database/sql"
 
 	mw "bugtracker/internal/web/middleware"
 
@@ -10,7 +10,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-func SetupRouter(db *database.PostgresDB) (*chi.Mux, error) {
+func SetupRouter(db *sql.DB) (*chi.Mux, error) {
 
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)

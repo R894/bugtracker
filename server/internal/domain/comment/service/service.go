@@ -1,17 +1,17 @@
 package service
 
 import (
-	"bugtracker/internal/database"
 	"bugtracker/internal/domain/comment/aggregate"
 	"bugtracker/internal/domain/comment/repository"
 	"context"
+	"database/sql"
 )
 
 type CommentService struct {
-	repo *repository.PostgresCommentRepository
+	repo repository.CommentRepository
 }
 
-func NewCommentService(db *database.PostgresDB) *CommentService {
+func NewCommentService(db *sql.DB) *CommentService {
 	return &CommentService{
 		repo: repository.NewPostgresCommentRepository(db),
 	}

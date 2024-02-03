@@ -1,15 +1,15 @@
 package web
 
 import (
-	"bugtracker/internal/database"
 	"bugtracker/internal/web/router"
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 )
 
-func StartServer(db *database.PostgresDB) error {
+func StartServer(db *sql.DB) error {
 	port := os.Getenv("API_PORT")
 	if port == "" {
 		port = "3333"

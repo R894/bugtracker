@@ -1,17 +1,17 @@
 package service
 
 import (
-	"bugtracker/internal/database"
 	"bugtracker/internal/domain/user/aggregate"
 	"bugtracker/internal/domain/user/repository"
 	"context"
+	"database/sql"
 )
 
 type UserService struct {
 	userRepository repository.UserRepository
 }
 
-func NewUserService(db *database.PostgresDB) *UserService {
+func NewUserService(db *sql.DB) *UserService {
 	return &UserService{
 		userRepository: repository.NewPostgresUserRepository(db),
 	}

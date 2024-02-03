@@ -1,11 +1,11 @@
 package handler
 
 import (
-	"bugtracker/internal/database"
 	"bugtracker/internal/domain/user/aggregate"
 	"bugtracker/internal/domain/user/service"
 	"bugtracker/internal/web/middleware"
 	"bugtracker/internal/web/response"
+	"database/sql"
 	"encoding/json"
 	"net/http"
 
@@ -17,7 +17,7 @@ type UserHandler struct {
 	service *service.UserService
 }
 
-func NewUserHandler(db *database.PostgresDB) *UserHandler {
+func NewUserHandler(db *sql.DB) *UserHandler {
 	return &UserHandler{
 		service: service.NewUserService(db),
 	}

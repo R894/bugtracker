@@ -21,7 +21,7 @@ func main() {
 	}
 	storage.Migrate(db.Db)
 
-	err = web.StartServer(db)
+	err = web.StartServer(db.Db)
 	if err != nil {
 		log.Fatal(err)
 	}

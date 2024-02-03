@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"bugtracker/internal/database"
 	"bugtracker/internal/domain/bug/aggregate"
 	"bugtracker/internal/domain/bug/service"
 	"bugtracker/internal/web/response"
+	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -16,7 +16,7 @@ type BugHandler struct {
 	service *service.BugService
 }
 
-func NewBugHandler(db *database.PostgresDB) *BugHandler {
+func NewBugHandler(db *sql.DB) *BugHandler {
 	return &BugHandler{
 		service: service.NewBugService(db),
 	}

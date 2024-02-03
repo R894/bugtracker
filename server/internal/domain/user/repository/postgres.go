@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"bugtracker/internal/database"
 	"bugtracker/internal/domain/user/aggregate"
 	"context"
+	"database/sql"
 	"log"
 	"time"
 
@@ -11,10 +11,10 @@ import (
 )
 
 type PostgresUserRepository struct {
-	db *database.PostgresDB
+	db *sql.DB
 }
 
-func NewPostgresUserRepository(db *database.PostgresDB) *PostgresUserRepository {
+func NewPostgresUserRepository(db *sql.DB) *PostgresUserRepository {
 	return &PostgresUserRepository{
 		db: db,
 	}
@@ -24,7 +24,7 @@ func (r *PostgresUserRepository) SaveUser(ctx context.Context, user aggregate.Us
 	query := sq.Insert("users").
 		Columns("id", "username", "email", "password", "created_at", "updated_at").
 		Values(user.ID, user.Username, user.Email, user.Password, user.CreatedAt, user.UpdatedAt).
-		PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
+		PlaceholderFormat(sq.Dollar).RunWith(r.db)
 
 	_, err := query.ExecContext(ctx)
 	if err != nil {
@@ -36,7 +36,7 @@ func (r *PostgresUserRepository) SaveUser(ctx context.Context, user aggregate.Us
 
 func (r *PostgresUserRepository) GetUserByID(ctx context.Context, userID string) (*aggregate.User, error) {
 	var user aggregate.User
-	query := sq.Select("*").From("users").Where(sq.Eq{"id": userID}).PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
+	query := sq.Select("*").From("users").Where(sq.Eq{"id": userID}).PlaceholderFormat(sq.Dollar).RunWith(r.db)
 
 	err := query.QueryRowContext(ctx).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
@@ -48,7 +48,7 @@ func (r *PostgresUserRepository) GetUserByID(ctx context.Context, userID string)
 
 func (r *PostgresUserRepository) GetUserByName(ctx context.Context, username string) (*aggregate.User, error) {
 	var user aggregate.User
-	query := sq.Select("*").From("users").Where(sq.Eq{"username": username}).PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
+	query := sq.Select("*").From("users").Where(sq.Eq{"username": username}).PlaceholderFormat(sq.Dollar).RunWith(r.db)
 
 	err := query.QueryRowContext(ctx).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
@@ -60,7 +60,7 @@ func (r *PostgresUserRepository) GetUserByName(ctx context.Context, username str
 
 func (r *PostgresUserRepository) GetUserByEmail(ctx context.Context, userEmail string) (*aggregate.User, error) {
 	var user aggregate.User
-	query := sq.Select("*").From("users").Where(sq.Eq{"email": userEmail}).PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
+	query := sq.Select("*").From("users").Where(sq.Eq{"email": userEmail}).PlaceholderFormat(sq.Dollar).RunWith(r.db)
 
 	err := query.QueryRowContext(ctx).Scan(&user.ID,
 		&user.Username,
@@ -77,7 +77,7 @@ func (r *PostgresUserRepository) GetUserByEmail(ctx context.Context, userEmail s
 }
 
 func (r *PostgresUserRepository) GetUsers(ctx context.Context) ([]aggregate.User, error) {
-	query := sq.Select("*").From("users").PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
+	query := sq.Select("*").From("users").PlaceholderFormat(sq.Dollar).RunWith(r.db)
 
 	rows, err := query.QueryContext(ctx)
 	if err != nil {
@@ -117,7 +117,7 @@ func (r *PostgresUserRepository) UpdateUser(ctx context.Context, user aggregate.
 		Set("email", user.Email).
 		Set("updatedAt", time.Now()).
 		Where(sq.Eq{"id": user.ID}).
-		PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
+		PlaceholderFormat(sq.Dollar).RunWith(r.db)
 
 	_, err := query.ExecContext(ctx)
 	if err != nil {
@@ -128,7 +128,7 @@ func (r *PostgresUserRepository) UpdateUser(ctx context.Context, user aggregate.
 }
 
 func (r *PostgresUserRepository) DeleteUser(ctx context.Context, userID string) error {
-	query := sq.Delete("users").Where(sq.Eq{"id": userID}).PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
+	query := sq.Delete("users").Where(sq.Eq{"id": userID}).PlaceholderFormat(sq.Dollar).RunWith(r.db)
 
 	_, err := query.ExecContext(ctx)
 	if err != nil {
