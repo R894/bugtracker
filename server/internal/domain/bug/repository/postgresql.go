@@ -1,18 +1,18 @@
 package repository
 
 import (
-	"bugtracker/internal/database"
 	"bugtracker/internal/domain/bug/aggregate"
 	"context"
+	"database/sql"
 
 	sq "github.com/Masterminds/squirrel"
 )
 
 type PostgresBugRepository struct {
-	db *database.PostgresDB
+	db *sql.DB
 }
 
-func NewPostgresBugRepository(db *database.PostgresDB) *PostgresBugRepository {
+func NewPostgresBugRepository(db *sql.DB) *PostgresBugRepository {
 	return &PostgresBugRepository{
 		db: db,
 	}
@@ -20,10 +20,10 @@ func NewPostgresBugRepository(db *database.PostgresDB) *PostgresBugRepository {
 
 func (r *PostgresBugRepository) SaveBug(ctx context.Context, bug *aggregate.Bug) error {
 	query := sq.Insert("bugs").
-		Columns("id", "title", "description", "status", "priority", "assignee", "created_at", "updated_at").
-		Values(bug.ID, bug.Title, bug.Description, bug.Status, bug.Priority, bug.Assignee, bug.CreatedAt, bug.UpdatedAt).
+		Columns("id", "title", "description", "status", "priority", "assignee", "project_id", "created_at", "updated_at", "project_id").
+		Values(bug.ID, bug.Title, bug.Description, bug.Status, bug.Priority, bug.Assignee, bug.CreatedAt, bug.UpdatedAt, bug.ProjectId).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(r.db.Db)
+		RunWith(r.db)
 
 	_, err := query.ExecContext(ctx)
 	if err != nil {
@@ -34,9 +34,9 @@ func (r *PostgresBugRepository) SaveBug(ctx context.Context, bug *aggregate.Bug)
 
 func (r *PostgresBugRepository) GetBugByID(ctx context.Context, bugID string) (*aggregate.Bug, error) {
 	var bug aggregate.Bug
-	query := sq.Select("*").From("bugs").Where(sq.Eq{"id": bugID}).PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
+	query := sq.Select("*").From("bugs").Where(sq.Eq{"id": bugID}).PlaceholderFormat(sq.Dollar).RunWith(r.db)
 
-	err := query.QueryRow().Scan(&bug.ID, &bug.Title, &bug.Description, &bug.Status, &bug.Priority, &bug.Assignee, &bug.CreatedAt, &bug.UpdatedAt)
+	err := query.QueryRow().Scan(&bug.ID, &bug.Title, &bug.Description, &bug.Status, &bug.Priority, &bug.Assignee, &bug.CreatedAt, &bug.UpdatedAt, &bug.ProjectId)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (r *PostgresBugRepository) GetBugByID(ctx context.Context, bugID string) (*
 }
 
 func (r *PostgresBugRepository) GetBugs(ctx context.Context) ([]aggregate.Bug, error) {
-	query := sq.Select("*").From("bugs").PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
+	query := sq.Select("*").From("bugs").PlaceholderFormat(sq.Dollar).RunWith(r.db)
 
 	rows, err := query.QueryContext(ctx)
 	if err != nil {
@@ -66,6 +66,7 @@ func (r *PostgresBugRepository) GetBugs(ctx context.Context) ([]aggregate.Bug, e
 			&bug.Assignee,
 			&bug.CreatedAt,
 			&bug.UpdatedAt,
+			&bug.ProjectId,
 		)
 		if err != nil {
 			return nil, err
@@ -89,7 +90,7 @@ func (r *PostgresBugRepository) UpdateBug(ctx context.Context, bug *aggregate.Up
 		Set("assignee", bug.Assignee).
 		Set("updated_at", bug.UpdatedAt).
 		Where(sq.Eq{"id": bug.ID}).
-		PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
+		PlaceholderFormat(sq.Dollar).RunWith(r.db)
 
 	_, err := query.ExecContext(ctx)
 	if err != nil {
@@ -103,7 +104,7 @@ func (r *PostgresBugRepository) AssignBugTo(ctx context.Context, bugId, username
 	query := sq.Update("bugs").
 		Set("assignee", username).
 		Where(sq.Eq{"id": bugId}).
-		PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
+		PlaceholderFormat(sq.Dollar).RunWith(r.db)
 
 	_, err := query.ExecContext(ctx)
 	if err != nil {
@@ -114,7 +115,7 @@ func (r *PostgresBugRepository) AssignBugTo(ctx context.Context, bugId, username
 }
 
 func (r *PostgresBugRepository) DeleteBug(ctx context.Context, bugID string) error {
-	query := sq.Delete("bugs").Where(sq.Eq{"id": bugID}).PlaceholderFormat(sq.Dollar).RunWith(r.db.Db)
+	query := sq.Delete("bugs").Where(sq.Eq{"id": bugID}).PlaceholderFormat(sq.Dollar).RunWith(r.db)
 
 	_, err := query.ExecContext(ctx)
 	if err != nil {

@@ -1,18 +1,18 @@
 package repository
 
 import (
-	"bugtracker/internal/database"
 	"bugtracker/internal/domain/comment/aggregate"
 	"context"
+	"database/sql"
 
 	sq "github.com/Masterminds/squirrel"
 )
 
 type PostgresCommentRepository struct {
-	db *database.PostgresDB
+	db *sql.DB
 }
 
-func NewPostgresCommentRepository(db *database.PostgresDB) *PostgresCommentRepository {
+func NewPostgresCommentRepository(db *sql.DB) *PostgresCommentRepository {
 	return &PostgresCommentRepository{
 		db: db,
 	}
@@ -20,7 +20,7 @@ func NewPostgresCommentRepository(db *database.PostgresDB) *PostgresCommentRepos
 
 func (c *PostgresCommentRepository) SaveComment(ctx context.Context, comment aggregate.Comment) error {
 	query := sq.Insert("comments").Columns("id", "bugId", "content", "createdAt", "updatedAt").
-		Values(comment.ID, comment.BugId, comment.Content, comment.CreatedAt, comment.UpdatedAt).PlaceholderFormat(sq.Dollar).RunWith(c.db.Db)
+		Values(comment.ID, comment.BugId, comment.Content, comment.CreatedAt, comment.UpdatedAt).PlaceholderFormat(sq.Dollar).RunWith(c.db)
 
 	_, err := query.ExecContext(ctx)
 	if err != nil {
@@ -31,7 +31,7 @@ func (c *PostgresCommentRepository) SaveComment(ctx context.Context, comment agg
 }
 
 func (c *PostgresCommentRepository) UpdateComment(ctx context.Context, commentId, content string) error {
-	query := sq.Update("comments").Set("content", content).Where(sq.Eq{"id": commentId}).PlaceholderFormat(sq.Dollar).RunWith(c.db.Db)
+	query := sq.Update("comments").Set("content", content).Where(sq.Eq{"id": commentId}).PlaceholderFormat(sq.Dollar).RunWith(c.db)
 
 	_, err := query.ExecContext(ctx)
 	if err != nil {
@@ -42,7 +42,7 @@ func (c *PostgresCommentRepository) UpdateComment(ctx context.Context, commentId
 }
 
 func (c *PostgresCommentRepository) DeleteComment(ctx context.Context, commentId string) error {
-	query := sq.Delete("comments").Where(sq.Eq{"id": commentId}).PlaceholderFormat(sq.Dollar).RunWith(c.db.Db)
+	query := sq.Delete("comments").Where(sq.Eq{"id": commentId}).PlaceholderFormat(sq.Dollar).RunWith(c.db)
 
 	_, err := query.ExecContext(ctx)
 	if err != nil {
@@ -50,4 +50,23 @@ func (c *PostgresCommentRepository) DeleteComment(ctx context.Context, commentId
 	}
 
 	return nil
+}
+
+func (c *PostgresCommentRepository) GetCommentsByBugId(ctx context.Context, bugId string) ([]aggregate.Comment, error) {
+	query := sq.Select("*").From("comments").Where(sq.Eq{"bug_id": bugId}).PlaceholderFormat(sq.Dollar).RunWith(c.db)
+
+	rows, err := query.QueryContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var comments []aggregate.Comment
+	for rows.Next() {
+		var comment aggregate.Comment
+		rows.Scan(&comment.ID, &comment.BugId, &comment.Content, &comment.CreatedAt, &comment.UpdatedAt)
+		comments = append(comments, comment)
+	}
+
+	return comments, nil
 }
