@@ -14,6 +14,7 @@ type Bug struct {
 	Status      entity.BugStatus   `json:"status"`
 	Priority    entity.BugPriority `json:"priority"`
 	Assignee    string             `json:"asignee"`
+	ProjectId   string             `json:"projectId"`
 	CreatedAt   time.Time          `json:"createdAt"`
 	UpdatedAt   time.Time          `json:"updatedAt"`
 }
@@ -21,6 +22,7 @@ type Bug struct {
 type CreateBugRequest struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
+	ProjectId   string `json:"projectId"`
 }
 
 type UpdateBugRequest struct {
@@ -43,6 +45,7 @@ func NewBug(req CreateBugRequest) *Bug {
 		Title:       req.Title,
 		Description: req.Description,
 		Status:      entity.BugStatusOpen,
+		ProjectId:   req.ProjectId,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 	}
