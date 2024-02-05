@@ -11,7 +11,6 @@ import (
 )
 
 func SetupRouter(db *sql.DB) (*chi.Mux, error) {
-
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
@@ -20,12 +19,19 @@ func SetupRouter(db *sql.DB) (*chi.Mux, error) {
 
 	bugHandler := handler.NewBugHandler(db)
 	userHandler := handler.NewUserHandler(db)
+	projectHandler := handler.NewProjectHandler(db)
 
 	r.Route("/bugs", func(r chi.Router) {
 		mw.ApplyAuthMiddleware(r)
 		r.Get("/", bugHandler.GetBugs)
 		r.Post("/", bugHandler.CreateNewBug)
 		r.Get("/{bugId}", bugHandler.GetBugByID)
+		r.Get("/projects/{projectId}", bugHandler.GetBugByID)
+	})
+
+	r.Route("/projects", func(r chi.Router) {
+		mw.ApplyAuthMiddleware(r)
+		r.Post("/", projectHandler.CreateNewProject)
 	})
 
 	r.Route("/users", func(r chi.Router) {
