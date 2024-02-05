@@ -81,6 +81,43 @@ func (r *PostgresBugRepository) GetBugs(ctx context.Context) ([]aggregate.Bug, e
 	return bugs, nil
 }
 
+func (r *PostgresBugRepository) GetBugsByProjectID(ctx context.Context, projectId string) ([]aggregate.Bug, error) {
+	query := sq.Select("*").From("bugs").Where(sq.Eq{"project_id": projectId}).PlaceholderFormat(sq.Dollar).RunWith(r.db)
+
+	rows, err := query.QueryContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// TODO: refactor this dumpsterfuck
+	var bugs []aggregate.Bug
+	for rows.Next() {
+		var bug aggregate.Bug
+		err := rows.Scan(
+			&bug.ID,
+			&bug.Title,
+			&bug.Description,
+			&bug.Status,
+			&bug.Priority,
+			&bug.Assignee,
+			&bug.CreatedAt,
+			&bug.UpdatedAt,
+			&bug.ProjectId,
+		)
+		if err != nil {
+			return nil, err
+		}
+		bugs = append(bugs, bug)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return bugs, nil
+}
+
 func (r *PostgresBugRepository) UpdateBug(ctx context.Context, bug *aggregate.UpdateBugRequest) error {
 	query := sq.Update("bugs").
 		Set("title", bug.Title).

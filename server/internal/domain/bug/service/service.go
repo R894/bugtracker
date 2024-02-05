@@ -39,6 +39,10 @@ func (s *BugService) GetBugByID(ctx context.Context, bugID string) (*aggregate.B
 	return s.bugRepository.GetBugByID(ctx, bugID)
 }
 
+func (s *BugService) GetBugsByProjectId(ctx context.Context, projectId string) ([]aggregate.Bug, error) {
+	return s.bugRepository.GetBugsByProjectID(ctx, projectId)
+}
+
 func (s *BugService) UpdateBug(ctx context.Context, bug *aggregate.UpdateBugRequest) error {
 	return s.bugRepository.UpdateBug(ctx, bug)
 }

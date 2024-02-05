@@ -51,6 +51,18 @@ func (b *BugHandler) GetBugByID(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, bug)
 }
 
+func (b *BugHandler) GetBugsByProjectID(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "projectId")
+	ctx := r.Context()
+	bugs, err := b.service.GetBugsByProjectId(ctx, id)
+	if err != nil {
+		log.Println("Error getting Bugs by project ID:", err)
+		response.BadRequest(w)
+		return
+	}
+	response.JSON(w, http.StatusOK, bugs)
+}
+
 func (b *BugHandler) GetBugs(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	bugs, err := b.service.GetBugs(ctx)
