@@ -37,12 +37,13 @@ func NewUser(reg UserRegisterModel) *User {
 	if err != nil {
 		panic(err)
 	}
-
+	var emptyStringArray []string
 	return &User{
 		ID:        generateUniqueID(),
 		Username:  reg.Username,
 		Email:     reg.Email,
 		Password:  hashedPassword,
+		Projects:  emptyStringArray,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}

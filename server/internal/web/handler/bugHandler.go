@@ -33,6 +33,7 @@ func (b *BugHandler) CreateNewBug(w http.ResponseWriter, r *http.Request) {
 
 	bug, err := b.service.CreateBug(ctx, createBugReq)
 	if err != nil {
+		log.Println(err)
 		response.InternalError(w)
 		return
 	}

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/lib/pq"
 )
 
 type PostgresUserRepository struct {
@@ -22,12 +23,13 @@ func NewPostgresUserRepository(db *sql.DB) *PostgresUserRepository {
 
 func (r *PostgresUserRepository) SaveUser(ctx context.Context, user aggregate.User) error {
 	query := sq.Insert("users").
-		Columns("id", "username", "email", "password", "created_at", "updated_at").
-		Values(user.ID, user.Username, user.Email, user.Password, user.CreatedAt, user.UpdatedAt).
+		Columns("id", "username", "email", "password", "created_at", "updated_at", "projects").
+		Values(user.ID, user.Username, user.Email, user.Password, user.CreatedAt, user.UpdatedAt, pq.Array(user.Projects)).
 		PlaceholderFormat(sq.Dollar).RunWith(r.db)
 
 	_, err := query.ExecContext(ctx)
 	if err != nil {
+		log.Println("Error creating user: ", err)
 		return err
 	}
 
@@ -38,7 +40,7 @@ func (r *PostgresUserRepository) GetUserByID(ctx context.Context, userID string)
 	var user aggregate.User
 	query := sq.Select("*").From("users").Where(sq.Eq{"id": userID}).PlaceholderFormat(sq.Dollar).RunWith(r.db)
 
-	err := query.QueryRowContext(ctx).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt)
+	err := query.QueryRowContext(ctx).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt, pq.Array(&user.Projects))
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +52,7 @@ func (r *PostgresUserRepository) GetUserByName(ctx context.Context, username str
 	var user aggregate.User
 	query := sq.Select("*").From("users").Where(sq.Eq{"username": username}).PlaceholderFormat(sq.Dollar).RunWith(r.db)
 
-	err := query.QueryRowContext(ctx).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt)
+	err := query.QueryRowContext(ctx).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt, &user.UpdatedAt, pq.Array(&user.Projects))
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +69,8 @@ func (r *PostgresUserRepository) GetUserByEmail(ctx context.Context, userEmail s
 		&user.Email,
 		&user.Password,
 		&user.CreatedAt,
-		&user.UpdatedAt)
+		&user.UpdatedAt,
+		pq.Array(&user.Projects))
 	if err != nil {
 		log.Println("Error getting user by email", err)
 		return nil, err
@@ -96,6 +99,7 @@ func (r *PostgresUserRepository) GetUsers(ctx context.Context) ([]aggregate.User
 			&user.Password,
 			&user.CreatedAt,
 			&user.UpdatedAt,
+			pq.Array(&user.Projects),
 		)
 		if err != nil {
 			return nil, err

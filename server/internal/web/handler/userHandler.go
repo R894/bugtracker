@@ -7,6 +7,7 @@ import (
 	"bugtracker/internal/web/response"
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -81,6 +82,7 @@ func (u *UserHandler) GetUserById(w http.ResponseWriter, r *http.Request) {
 
 	user, err := u.service.GetUserByID(ctx, id)
 	if err != nil {
+		log.Println(err)
 		response.NotFound(w)
 		return
 	}

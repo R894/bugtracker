@@ -20,7 +20,7 @@ func NewPostgresBugRepository(db *sql.DB) *PostgresBugRepository {
 
 func (r *PostgresBugRepository) SaveBug(ctx context.Context, bug *aggregate.Bug) error {
 	query := sq.Insert("bugs").
-		Columns("id", "title", "description", "status", "priority", "assignee", "project_id", "created_at", "updated_at", "project_id").
+		Columns("id", "title", "description", "status", "priority", "assignee", "created_at", "updated_at", "project_id").
 		Values(bug.ID, bug.Title, bug.Description, bug.Status, bug.Priority, bug.Assignee, bug.CreatedAt, bug.UpdatedAt, bug.ProjectId).
 		PlaceholderFormat(sq.Dollar).
 		RunWith(r.db)
