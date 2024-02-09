@@ -20,6 +20,7 @@ func SetupRouter(db *sql.DB) (*chi.Mux, error) {
 	bugHandler := handler.NewBugHandler(db)
 	userHandler := handler.NewUserHandler(db)
 	projectHandler := handler.NewProjectHandler(db)
+	commentHandler := handler.NewCommentHandler(db)
 
 	r.Route("/bugs", func(r chi.Router) {
 		mw.ApplyAuthMiddleware(r)
@@ -27,6 +28,13 @@ func SetupRouter(db *sql.DB) (*chi.Mux, error) {
 		r.Post("/", bugHandler.CreateNewBug)
 		r.Get("/{bugId}", bugHandler.GetBugByID)
 		r.Get("/projects/{projectId}", bugHandler.GetBugByID)
+	})
+
+	r.Route("/comments", func(r chi.Router) {
+		mw.ApplyAuthMiddleware(r)
+		r.Post("/", commentHandler.CreateNewComment)
+		r.Put("/", commentHandler.UpdateComment)
+		r.Delete("/", commentHandler.DeleteComment)
 	})
 
 	r.Route("/projects", func(r chi.Router) {
