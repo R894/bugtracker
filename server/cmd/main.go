@@ -12,17 +12,17 @@ import (
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error loading .env file", err)
 	}
 
 	db, err := database.NewPostgresDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error initializing database: ", err)
 	}
 	storage.Migrate(db.Db)
 
 	err = web.StartServer(db.Db)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error starting web server: ", err)
 	}
 }
