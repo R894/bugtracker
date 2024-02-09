@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"bugtracker/internal/web/response"
+	"context"
 	"log"
 	"net/http"
 	"os"
@@ -10,6 +11,12 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/golang-jwt/jwt/v5"
+)
+
+type contextKey string
+
+const (
+	ContextKeyUsername contextKey = "username"
 )
 
 func AuthMiddleware(next http.Handler) http.Handler {
@@ -21,12 +28,13 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		if !verifyToken(token) {
+		valid, username := verifyToken(token)
+		if !valid {
 			response.Error(w, http.StatusUnauthorized, "Invalid Token")
 			return
 		}
-
-		next.ServeHTTP(w, r)
+		ctx := context.WithValue(r.Context(), ContextKeyUsername, username)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
@@ -44,21 +52,25 @@ func extractToken(r *http.Request) string {
 	return parts[1]
 }
 
-func verifyToken(tokenString string) bool {
+func verifyToken(tokenString string) (bool, string) {
 	secretKey := os.Getenv("JWT_SECRET")
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secretKey), nil
 	})
 
 	if err != nil {
-		return false
+		return false, ""
 	}
 
 	if !token.Valid {
-		return false
+		return false, ""
 	}
 
-	return true
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return false, ""
+	}
+	return true, claims["username"].(string)
 }
 
 func CreateToken(username string) (string, error) {
