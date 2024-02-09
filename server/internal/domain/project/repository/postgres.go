@@ -42,13 +42,7 @@ func (r *PostgresProjectRepository) GetProjects(ctx context.Context) ([]aggregat
 
 	var projects []aggregate.Project
 	for rows.Next() {
-		var project aggregate.Project
-		err := rows.Scan(
-			&project.ID,
-			&project.Name,
-			&project.Description,
-			&project.OwnerId,
-		)
+		project, err := scanProject(rows)
 		if err != nil {
 			return nil, err
 		}
@@ -68,13 +62,10 @@ func (r *PostgresProjectRepository) GetProjectsByOwnerId(ctx context.Context, us
 
 	var projects []aggregate.Project
 	for rows.Next() {
-		var project aggregate.Project
-		err := rows.Scan(
-			&project.ID,
-			&project.Name,
-			&project.Description,
-			&project.OwnerId,
-		)
+		project, err := scanProject(rows)
+		if err != nil {
+			return nil, err
+		}
 		if err != nil {
 			return nil, err
 		}
@@ -93,4 +84,15 @@ func (r *PostgresProjectRepository) GetById(ctx context.Context, projectId strin
 	}
 
 	return &project, nil
+}
+
+func scanProject(rows *sql.Rows) (aggregate.Project, error) {
+	var project aggregate.Project
+	err := rows.Scan(
+		&project.ID,
+		&project.Name,
+		&project.Description,
+		&project.OwnerId,
+	)
+	return project, err
 }

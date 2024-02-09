@@ -21,6 +21,31 @@ func NewPostgresUserRepository(db *sql.DB) *PostgresUserRepository {
 	}
 }
 
+func userMap(user aggregate.User) map[string]interface{} {
+	return map[string]interface{}{
+		"id":         user.ID,
+		"username":   user.Username,
+		"email":      user.Email,
+		"password":   user.Password,
+		"created_at": user.CreatedAt,
+		"updatedAt":  time.Now(),
+		"projects":   pq.Array(user.Projects),
+	}
+}
+
+func scanUserRow(rows *sql.Rows) (aggregate.User, error) {
+	var user aggregate.User
+	err := rows.Scan(&user.ID,
+		&user.Username,
+		&user.Email,
+		&user.Password,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+		pq.Array(&user.Projects))
+
+	return user, err
+}
+
 func (r *PostgresUserRepository) SaveUser(ctx context.Context, user aggregate.User) error {
 	query := sq.Insert("users").
 		Columns("id", "username", "email", "password", "created_at", "updated_at", "projects").
@@ -88,19 +113,9 @@ func (r *PostgresUserRepository) GetUsers(ctx context.Context) ([]aggregate.User
 	}
 	defer rows.Close()
 
-	// TODO: refactor this dumpsterfuck
 	var users []aggregate.User
 	for rows.Next() {
-		var user aggregate.User
-		err := rows.Scan(
-			&user.ID,
-			&user.Username,
-			&user.Email,
-			&user.Password,
-			&user.CreatedAt,
-			&user.UpdatedAt,
-			pq.Array(&user.Projects),
-		)
+		user, err := scanUserRow(rows)
 		if err != nil {
 			return nil, err
 		}
@@ -110,34 +125,23 @@ func (r *PostgresUserRepository) GetUsers(ctx context.Context) ([]aggregate.User
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
-
 	return users, nil
 }
 
 func (r *PostgresUserRepository) UpdateUser(ctx context.Context, user aggregate.User) error {
-	query := sq.Update("users").
-		Set("username", user.Username).
-		Set("password", user.Password).
-		Set("email", user.Email).
-		Set("updatedAt", time.Now()).
-		Where(sq.Eq{"id": user.ID}).
-		PlaceholderFormat(sq.Dollar).RunWith(r.db)
-
+	query := sq.Update("users").SetMap(userMap(user)).Where(sq.Eq{"id": user.ID}).PlaceholderFormat(sq.Dollar).RunWith(r.db)
 	_, err := query.ExecContext(ctx)
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
 func (r *PostgresUserRepository) DeleteUser(ctx context.Context, userID string) error {
 	query := sq.Delete("users").Where(sq.Eq{"id": userID}).PlaceholderFormat(sq.Dollar).RunWith(r.db)
-
 	_, err := query.ExecContext(ctx)
 	if err != nil {
 		return err
 	}
-
 	return nil
 }

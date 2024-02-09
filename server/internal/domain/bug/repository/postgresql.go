@@ -18,6 +18,22 @@ func NewPostgresBugRepository(db *sql.DB) *PostgresBugRepository {
 	}
 }
 
+func scanBug(rows *sql.Rows) (aggregate.Bug, error) {
+	var bug aggregate.Bug
+	err := rows.Scan(
+		&bug.ID,
+		&bug.Title,
+		&bug.Description,
+		&bug.Status,
+		&bug.Priority,
+		&bug.Assignee,
+		&bug.CreatedAt,
+		&bug.UpdatedAt,
+		&bug.ProjectId,
+	)
+	return bug, err
+}
+
 func (r *PostgresBugRepository) SaveBug(ctx context.Context, bug *aggregate.Bug) error {
 	query := sq.Insert("bugs").
 		Columns("id", "title", "description", "status", "priority", "assignee", "created_at", "updated_at", "project_id").
@@ -53,21 +69,9 @@ func (r *PostgresBugRepository) GetBugs(ctx context.Context) ([]aggregate.Bug, e
 	}
 	defer rows.Close()
 
-	// TODO: refactor this dumpsterfuck
 	var bugs []aggregate.Bug
 	for rows.Next() {
-		var bug aggregate.Bug
-		err := rows.Scan(
-			&bug.ID,
-			&bug.Title,
-			&bug.Description,
-			&bug.Status,
-			&bug.Priority,
-			&bug.Assignee,
-			&bug.CreatedAt,
-			&bug.UpdatedAt,
-			&bug.ProjectId,
-		)
+		bug, err := scanBug(rows)
 		if err != nil {
 			return nil, err
 		}
@@ -90,21 +94,9 @@ func (r *PostgresBugRepository) GetBugsByProjectID(ctx context.Context, projectI
 	}
 	defer rows.Close()
 
-	// TODO: refactor this dumpsterfuck
 	var bugs []aggregate.Bug
 	for rows.Next() {
-		var bug aggregate.Bug
-		err := rows.Scan(
-			&bug.ID,
-			&bug.Title,
-			&bug.Description,
-			&bug.Status,
-			&bug.Priority,
-			&bug.Assignee,
-			&bug.CreatedAt,
-			&bug.UpdatedAt,
-			&bug.ProjectId,
-		)
+		bug, err := scanBug(rows)
 		if err != nil {
 			return nil, err
 		}
