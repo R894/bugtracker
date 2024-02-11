@@ -27,7 +27,7 @@ func SetupRouter(db *sql.DB) (*chi.Mux, error) {
 		r.Get("/", bugHandler.GetBugs)
 		r.Post("/", bugHandler.CreateNewBug)
 		r.Get("/{bugId}", bugHandler.GetBugByID)
-		r.Get("/projects/{projectId}", bugHandler.GetBugByID)
+		r.Get("/projects/{projectId}", bugHandler.GetBugsByProjectID)
 	})
 
 	r.Route("/comments", func(r chi.Router) {
