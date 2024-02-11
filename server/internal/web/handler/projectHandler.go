@@ -2,6 +2,7 @@ package handler
 
 import (
 	"bugtracker/internal/domain/project/service"
+	"bugtracker/internal/web/middleware"
 	"bugtracker/internal/web/response"
 	"database/sql"
 	"encoding/json"
@@ -16,7 +17,6 @@ type ProjectHandler struct {
 type newProjectRequest struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	OwnerId     string `json:"ownerId"`
 }
 
 func NewProjectHandler(db *sql.DB) *ProjectHandler {
@@ -27,15 +27,15 @@ func NewProjectHandler(db *sql.DB) *ProjectHandler {
 
 func (p *ProjectHandler) CreateNewProject(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	username := r.Context().Value(middleware.ContextKeyUsername).(string)
 	var req newProjectRequest
-
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		response.BadRequest(w)
 		return
 	}
 
-	project, err := p.service.CreateProject(ctx, req.Name, req.Description, req.OwnerId)
+	project, err := p.service.CreateProject(ctx, req.Name, req.Description, username)
 	if err != nil {
 		log.Println("Error creating Project: ", err)
 		response.InternalError(w)
