@@ -1,10 +1,9 @@
 package repository
 
 import (
-	utils "bugtracker/internal"
+	config "bugtracker"
 	"bugtracker/internal/database"
 	"bugtracker/internal/domain/bug/aggregate"
-	"bugtracker/storage"
 	"context"
 	"log"
 	"testing"
@@ -13,9 +12,8 @@ import (
 )
 
 func TestSaveBug(t *testing.T) {
-	utils.FetchEnvVars()
+	config.FetchEnvVars()
 	db, err := database.NewPostgresTestDB()
-	storage.Migrate(db.Db)
 	if err != nil {
 		log.Fatal("Error setting up test database: ", err)
 	}

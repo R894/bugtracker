@@ -1,7 +1,7 @@
 package main
 
 import (
-	utils "bugtracker/internal"
+	config "bugtracker"
 	"bugtracker/internal/database"
 	"bugtracker/internal/web"
 	"bugtracker/storage"
@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	utils.FetchEnvVars()
+	config.FetchEnvVars()
 	postgres, err := database.NewPostgresDB()
 	if err != nil {
 		log.Fatal("Error initializing database: ", err)
