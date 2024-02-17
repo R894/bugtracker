@@ -1,12 +1,47 @@
-import { Button } from '@mui/material'
+import { BugReport } from '@mui/icons-material'
+import {
+  AppBar,
+  Button,
+  IconButton,
+  Stack,
+  Toolbar,
+  Typography,
+} from '@mui/material'
 import { useRouter } from 'next/router'
 
 const NavBar = () => {
   const router = useRouter()
   return (
     <>
-      <Button onClick={() => router.push('/')}>Home</Button>
-      <Button onClick={() => router.push('/login')}>Login</Button>
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="logo"
+          >
+            <BugReport />
+          </IconButton>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            BugTracker
+          </Typography>
+          <Stack direction="row" spacing={2}>
+            <Button color="inherit" onClick={() => router.push('/')}>
+              Home
+            </Button>
+            <Button color="inherit" onClick={() => router.push('/projects')}>
+              Projects
+            </Button>
+            <Button color="inherit" onClick={() => router.push('/about')}>
+              About
+            </Button>
+            <Button color="inherit" onClick={() => router.push('/login')}>
+              Login
+            </Button>
+          </Stack>
+        </Toolbar>
+      </AppBar>
     </>
   )
 }
