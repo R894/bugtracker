@@ -15,6 +15,22 @@ video {
   display: block;
   max-width: 100%;
 }
-body {
+html,
+body,
+main,
+#__next {
   min-height: 100vh;
+  height: 100%;
+}
+main {
+  display: flex;
+  flex-direction: column;
+}
+.layout {
+  display: flex;
+  flex-direction: column;
+  max-width: 1080px;
+  align-items: center;
+  flex-grow: 1;
+  margin: 0 auto;
 }
