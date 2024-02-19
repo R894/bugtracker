@@ -1,7 +1,8 @@
 import { Apartment } from '@mui/icons-material'
 import { Card, Stack, Typography } from '@mui/material'
+import { type ReactNode } from 'react'
 
-const Feature = ({ children }: { children: React.ReactNode }) => {
+const Feature = ({ children }: { children: ReactNode }) => {
   return (
     <Card
       sx={{
