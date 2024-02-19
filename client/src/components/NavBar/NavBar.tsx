@@ -30,11 +30,8 @@ const NavBar = () => {
             <Button color="inherit" onClick={() => router.push('/')}>
               Home
             </Button>
-            <Button color="inherit" onClick={() => router.push('/projects')}>
-              Projects
-            </Button>
-            <Button color="inherit" onClick={() => router.push('/about')}>
-              About
+            <Button color="inherit" onClick={() => router.push('/dashboard')}>
+              Dashboard
             </Button>
             <Button color="inherit" onClick={() => router.push('/login')}>
               Login
