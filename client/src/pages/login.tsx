@@ -1,3 +1,4 @@
+import Footer from '@/components/Footer/Footer'
 import LoginForm from '@/components/LoginForm/LoginForm'
 import NavBar from '@/components/NavBar/NavBar'
 import Head from 'next/head'
@@ -11,7 +12,10 @@ export default function Login() {
       </Head>
       <main>
         <NavBar />
-        <LoginForm />
+        <div className="layout">
+          <LoginForm />
+        </div>
+        <Footer />
       </main>
     </>
   )
