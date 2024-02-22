@@ -1,20 +1,38 @@
 import { UserContext, UserContextType } from '@/context/UserContext'
-import { Button, Container, Stack, TextField, Typography } from '@mui/material'
+import {
+  Alert,
+  Button,
+  Container,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material'
+import { useRouter } from 'next/router'
 import { useContext, useState } from 'react'
 
 const LoginForm = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState(false)
+  const [errMessage, setErrMessage] = useState('')
   const { loginUser } = useContext(UserContext) as UserContextType
+  const router = useRouter()
 
   const clearForm = () => {
     setEmail('')
     setPassword('')
   }
+
   const handleLogin = async () => {
+    setError(false)
     const response = await loginUser({ email, password })
     clearForm()
-    console.log(response)
+    if (response.error !== undefined) {
+      setError(true)
+      setErrMessage(response.message)
+      return
+    }
+    router.push('/')
   }
   return (
     <Container maxWidth="sm" sx={{ minWidth: '320px', padding: '12px' }}>
@@ -48,6 +66,9 @@ const LoginForm = () => {
         >
           Login
         </Button>
+        <Alert severity="error" sx={{ display: error ? 'flex' : 'none' }}>
+          Error: {errMessage}
+        </Alert>
       </Stack>
     </Container>
   )

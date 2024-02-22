@@ -17,12 +17,10 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const loginUser = async (loginRequest: LoginRequest) => {
     const response = await postLogin(loginRequest)
-    if (!response.error) {
-      const currentToken = response.token
-      console.log('setting token to', currentToken)
-      setToken(currentToken)
-      localStorage.setItem('token', currentToken)
-    }
+    const currentToken = response.token
+    setToken(currentToken)
+    localStorage.setItem('token', currentToken)
+    return response
   }
 
   const logoutUser = () => {
