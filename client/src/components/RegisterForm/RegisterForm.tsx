@@ -1,14 +1,39 @@
-import { Button, Container, Stack, TextField, Typography } from '@mui/material'
-import { useState } from 'react'
+import { UserContext, UserContextType } from '@/context/UserContext'
+import {
+  Alert,
+  Button,
+  Container,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material'
+import { useRouter } from 'next/router'
+import { useContext, useState } from 'react'
 const RegisterForm = () => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState(false)
+  const [errMessage, setErrMessage] = useState('')
+  const { registerUser } = useContext(UserContext) as UserContextType
+  const router = useRouter()
 
   const clearForm = () => {
     setUsername('')
     setEmail('')
     setPassword('')
+  }
+
+  const handleRegister = async () => {
+    setError(false)
+    const response = await registerUser({ email, username, password })
+    clearForm()
+    if (response.error !== undefined) {
+      setError(true)
+      setErrMessage(JSON.stringify(response.message))
+      return
+    }
+    router.push('/')
   }
 
   return (
@@ -48,11 +73,14 @@ const RegisterForm = () => {
         <Button
           variant="contained"
           onClick={() => {
-            clearForm()
+            handleRegister()
           }}
         >
           Register
         </Button>
+        <Alert severity="error" sx={{ display: error ? 'flex' : 'none' }}>
+          Error: {errMessage}
+        </Alert>
       </Stack>
     </Container>
   )
