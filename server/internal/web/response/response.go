@@ -3,6 +3,8 @@ package response
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type ErrorResponse struct {
@@ -10,12 +12,10 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-type ValidationError struct {
-	Field   string `json:"field"`
-	Message string `json:"message"`
+type ValidationErrorResponse struct {
+	Code    int               `json:"code"`
+	Message map[string]string `json:"message"`
 }
-
-type ValidationErrors []ValidationError
 
 func Error(w http.ResponseWriter, code int, message string) {
 	w.Header().Set("Content-Type", "application/json")
@@ -64,21 +64,19 @@ func JSON(w http.ResponseWriter, code int, data interface{}) {
 	json.NewEncoder(w).Encode(data)
 }
 
-func ValidationErr(w http.ResponseWriter, field, message string) {
+func ValidationErrs(w http.ResponseWriter, errors validator.ValidationErrors) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusUnprocessableEntity) // 422 Unprocessable Entity
+	errorMap := make(map[string]string)
 
-	validationError := ValidationError{
-		Field:   field,
-		Message: message,
+	for _, e := range errors {
+		errorMap[e.Field()] = e.Tag()
 	}
 
-	json.NewEncoder(w).Encode(validationError)
-}
+	response := ValidationErrorResponse{
+		Code:    http.StatusUnprocessableEntity,
+		Message: errorMap,
+	}
 
-func ValidationErrs(w http.ResponseWriter, errors ValidationErrors) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusUnprocessableEntity) // 422 Unprocessable Entity
-
-	json.NewEncoder(w).Encode(errors)
+	json.NewEncoder(w).Encode(response)
 }
