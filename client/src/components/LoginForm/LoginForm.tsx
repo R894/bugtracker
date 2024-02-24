@@ -29,7 +29,7 @@ const LoginForm = () => {
     clearForm()
     if (response.error !== undefined) {
       setError(true)
-      setErrMessage(response.message)
+      setErrMessage(response.message.toString())
       return
     }
     router.push('/')
