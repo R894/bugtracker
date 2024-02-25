@@ -5,6 +5,7 @@ export interface Bug {
     status: string,
     priority: string,
     projectId: string,
+    asignee: string
     createdAt: Date,
     updatedAt: Date
 }
