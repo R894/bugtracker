@@ -1,3 +1,6 @@
+import { getBugs } from '@/api/bugService'
+import { Bug } from '@/api/models/bug'
+import { UserContext, UserContextType } from '@/context/UserContext'
 import {
   Paper,
   Table,
@@ -7,27 +10,24 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material'
+import { useContext, useEffect, useState } from 'react'
 
-function createData(
-  title: string,
-  priority: string,
-  status: string,
-  assignee: string,
-  createdAt: string,
-) {
-  return { title, priority, status, assignee, createdAt }
-}
+const Dashboard = () => {
+  const { token } = useContext(UserContext) as UserContextType
+  const [bugs, setBugs] = useState<Bug[]>([])
 
-const rows = [
-  createData('bug', 'critical', 'open', "user", 'may 15th'),
-  createData('bug', 'critical', 'open', "user", 'may 15th'),
-  createData('bug', 'critical', 'open', "user", 'may 15th'),
-  createData('bug', 'critical', 'open', "user", 'may 15th'),
-]
+  useEffect(() => {
+    async function fetchBugs() {
+      if (!token) return
+      const response: Bug[] = await getBugs(token)
+      setBugs(response)
+      console.log(response)
+    }
+    fetchBugs()
+  }, [token])
 
-export default function BasicTable() {
   return (
-    <div style={{padding:'16px'}}>
+    <div style={{ padding: '16px' }}>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 1080 }} aria-label="Bug Table">
           <TableHead>
@@ -40,9 +40,9 @@ export default function BasicTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {bugs.map((row) => (
               <TableRow
-                key={row.title}
+                key={row.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
@@ -50,8 +50,8 @@ export default function BasicTable() {
                 </TableCell>
                 <TableCell align="right">{row.priority}</TableCell>
                 <TableCell align="right">{row.status}</TableCell>
-                <TableCell align="right">{row.assignee}</TableCell>
-                <TableCell align="right">{row.createdAt}</TableCell>
+                <TableCell align="right">{row.asignee}</TableCell>
+                <TableCell align="right">{row.createdAt.toLocaleString('en-GB')}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -60,3 +60,5 @@ export default function BasicTable() {
     </div>
   )
 }
+
+export default Dashboard
