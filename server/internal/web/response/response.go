@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -64,13 +65,14 @@ func JSON(w http.ResponseWriter, code int, data interface{}) {
 	json.NewEncoder(w).Encode(data)
 }
 
-func ValidationErrs(w http.ResponseWriter, errors validator.ValidationErrors) {
+func ValidationErrs(w http.ResponseWriter, errors validator.ValidationErrors, trans ut.Translator) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusUnprocessableEntity) // 422 Unprocessable Entity
 	errorMap := make(map[string]string)
 
 	for _, e := range errors {
-		errorMap[e.Field()] = e.Tag()
+		errMsg := e.Translate(trans)
+		errorMap[e.Field()] = errMsg
 	}
 
 	response := ValidationErrorResponse{
