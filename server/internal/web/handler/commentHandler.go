@@ -3,14 +3,18 @@ package handler
 import (
 	"bugtracker/internal/domain/comment/service"
 	"bugtracker/internal/web/response"
-	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
+
+	ut "github.com/go-playground/universal-translator"
+	"github.com/go-playground/validator/v10"
 )
 
 type CommentHandler struct {
-	service *service.CommentService
+	service  *service.CommentService
+	validate *validator.Validate
+	trans    ut.Translator
 }
 
 type newCommentRequest struct {
@@ -25,12 +29,6 @@ type updateCommentRequest struct {
 
 type deleteCommentRequest struct {
 	CommentId string `json:"commentId"`
-}
-
-func NewCommentHandler(db *sql.DB) *CommentHandler {
-	return &CommentHandler{
-		service: service.NewCommentService(db),
-	}
 }
 
 func (c *CommentHandler) CreateNewComment(w http.ResponseWriter, r *http.Request) {

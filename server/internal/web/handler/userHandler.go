@@ -5,24 +5,24 @@ import (
 	"bugtracker/internal/domain/user/service"
 	"bugtracker/internal/web/middleware"
 	"bugtracker/internal/web/response"
-	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UserHandler struct {
-	service *service.UserService
+	service  *service.UserService
+	validate *validator.Validate
+	trans    ut.Translator
 }
-
-func NewUserHandler(db *sql.DB) *UserHandler {
-	return &UserHandler{
-		service: service.NewUserService(db),
-	}
+type userLoginResponse struct {
+	Token string          `json:"token"`
+	User  *aggregate.User `json:"user"`
 }
 
 func (u *UserHandler) CreateNewUser(w http.ResponseWriter, r *http.Request) {
@@ -34,14 +34,10 @@ func (u *UserHandler) CreateNewUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create a new validator instance
-	validate := validator.New()
-
-	// Validate the User struct
-	err = validate.Struct(createUserReq)
+	err = u.validate.Struct(createUserReq)
 	if err != nil {
 		errors := err.(validator.ValidationErrors)
-		response.ValidationErrs(w, errors)
+		response.ValidationErrs(w, errors, u.trans)
 		return
 	}
 
@@ -74,7 +70,7 @@ func (u *UserHandler) UserLogin(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.InternalError(w)
 	}
-	response.JSON(w, http.StatusOK, map[string]string{"token": token})
+	response.JSON(w, http.StatusOK, userLoginResponse{Token: token, User: user})
 }
 
 func (u *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {

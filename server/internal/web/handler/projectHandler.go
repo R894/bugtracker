@@ -4,25 +4,23 @@ import (
 	"bugtracker/internal/domain/project/service"
 	"bugtracker/internal/web/middleware"
 	"bugtracker/internal/web/response"
-	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
+
+	ut "github.com/go-playground/universal-translator"
+	"github.com/go-playground/validator/v10"
 )
 
 type ProjectHandler struct {
-	service *service.ProjectService
+	service  *service.ProjectService
+	validate *validator.Validate
+	trans    ut.Translator
 }
 
 type newProjectRequest struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
-}
-
-func NewProjectHandler(db *sql.DB) *ProjectHandler {
-	return &ProjectHandler{
-		service: service.NewProjectService(db),
-	}
 }
 
 func (p *ProjectHandler) CreateNewProject(w http.ResponseWriter, r *http.Request) {

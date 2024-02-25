@@ -4,22 +4,19 @@ import (
 	"bugtracker/internal/domain/bug/aggregate"
 	"bugtracker/internal/domain/bug/service"
 	"bugtracker/internal/web/response"
-	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	ut "github.com/go-playground/universal-translator"
+	"github.com/go-playground/validator/v10"
 )
 
 type BugHandler struct {
-	service *service.BugService
-}
-
-func NewBugHandler(db *sql.DB) *BugHandler {
-	return &BugHandler{
-		service: service.NewBugService(db),
-	}
+	service  *service.BugService
+	validate *validator.Validate
+	trans    ut.Translator
 }
 
 func (b *BugHandler) CreateNewBug(w http.ResponseWriter, r *http.Request) {

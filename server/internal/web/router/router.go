@@ -27,36 +27,33 @@ func SetupRouter(db *sql.DB) (*chi.Mux, error) {
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
 
-	bugHandler := handler.NewBugHandler(db)
-	userHandler := handler.NewUserHandler(db)
-	projectHandler := handler.NewProjectHandler(db)
-	commentHandler := handler.NewCommentHandler(db)
+	appHandler := handler.New(db)
 
 	r.Route("/bugs", func(r chi.Router) {
 		mw.ApplyAuthMiddleware(r)
-		r.Get("/", bugHandler.GetBugs)
-		r.Post("/", bugHandler.CreateNewBug)
-		r.Get("/{bugId}", bugHandler.GetBugByID)
-		r.Get("/projects/{projectId}", bugHandler.GetBugsByProjectID)
+		r.Get("/", appHandler.Bug.GetBugs)
+		r.Post("/", appHandler.Bug.CreateNewBug)
+		r.Get("/{bugId}", appHandler.Bug.GetBugByID)
+		r.Get("/projects/{projectId}", appHandler.Bug.GetBugsByProjectID)
 	})
 
 	r.Route("/comments", func(r chi.Router) {
 		mw.ApplyAuthMiddleware(r)
-		r.Post("/", commentHandler.CreateNewComment)
-		r.Put("/", commentHandler.UpdateComment)
-		r.Delete("/", commentHandler.DeleteComment)
+		r.Post("/", appHandler.Comment.CreateNewComment)
+		r.Put("/", appHandler.Comment.UpdateComment)
+		r.Delete("/", appHandler.Comment.DeleteComment)
 	})
 
 	r.Route("/projects", func(r chi.Router) {
 		mw.ApplyAuthMiddleware(r)
-		r.Post("/", projectHandler.CreateNewProject)
+		r.Post("/", appHandler.Project.CreateNewProject)
 	})
 
 	r.Route("/users", func(r chi.Router) {
-		r.With(mw.AuthMiddleware).Get("/", userHandler.GetUsers)
-		r.Post("/", userHandler.CreateNewUser)
-		r.Post("/login", userHandler.UserLogin)
-		r.With(mw.AuthMiddleware).Get("/{userId}", userHandler.GetUserById)
+		r.With(mw.AuthMiddleware).Get("/", appHandler.User.GetUsers)
+		r.Post("/", appHandler.User.CreateNewUser)
+		r.Post("/login", appHandler.User.UserLogin)
+		r.With(mw.AuthMiddleware).Get("/{userId}", appHandler.User.GetUserById)
 	})
 
 	return r, nil
