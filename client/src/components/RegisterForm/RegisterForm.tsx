@@ -8,7 +8,8 @@ import {
   Typography,
 } from '@mui/material'
 import { useRouter } from 'next/router'
-import { useContext, useState } from 'react'
+import { type FormEvent, useContext, useState } from 'react'
+
 const RegisterForm = () => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
@@ -24,7 +25,8 @@ const RegisterForm = () => {
     setPassword('')
   }
 
-  const handleRegister = async () => {
+  const handleRegister = async (e: FormEvent) => {
+    e.preventDefault()
     setError(false)
     const response = await registerUser({ email, username, password })
     clearForm()
@@ -38,50 +40,51 @@ const RegisterForm = () => {
 
   return (
     <Container maxWidth="sm" sx={{ minWidth: '320px', padding: '12px' }}>
-      <Stack spacing={1}>
-        <Typography variant="h5" sx={{ textAlign: 'center' }}>
-          Register
-        </Typography>
-        <TextField
-          id="standard-basic"
-          label="Username"
-          variant="standard"
-          onChange={(e) => {
-            setUsername(e.target.value)
-          }}
-          value={username}
-        />
-        <TextField
-          id="standard-basic"
-          label="Email"
-          variant="standard"
-          onChange={(e) => {
-            setEmail(e.target.value)
-          }}
-          value={email}
-        />
-        <TextField
-          id="standard-basic"
-          type="password"
-          label="Password"
-          variant="standard"
-          onChange={(e) => {
-            setPassword(e.target.value)
-          }}
-          value={password}
-        />
-        <Button
-          variant="contained"
-          onClick={() => {
-            handleRegister()
-          }}
-        >
-          Register
-        </Button>
-        <Alert severity="error" sx={{ display: error ? 'flex' : 'none' }}>
-          Error: {errMessage}
-        </Alert>
-      </Stack>
+      <form
+        onSubmit={(e) => {
+          handleRegister(e)
+        }}
+      >
+        <Stack spacing={1}>
+          <Typography variant="h5" sx={{ textAlign: 'center' }}>
+            Register
+          </Typography>
+          <TextField
+            id="standard-basic"
+            label="Username"
+            variant="standard"
+            onChange={(e) => {
+              setUsername(e.target.value)
+            }}
+            value={username}
+          />
+          <TextField
+            id="standard-basic"
+            label="Email"
+            variant="standard"
+            onChange={(e) => {
+              setEmail(e.target.value)
+            }}
+            value={email}
+          />
+          <TextField
+            id="standard-basic"
+            type="password"
+            label="Password"
+            variant="standard"
+            onChange={(e) => {
+              setPassword(e.target.value)
+            }}
+            value={password}
+          />
+          <Button variant="contained" type="submit">
+            Register
+          </Button>
+          <Alert severity="error" sx={{ display: error ? 'flex' : 'none' }}>
+            Error: {errMessage}
+          </Alert>
+        </Stack>
+      </form>
     </Container>
   )
 }
