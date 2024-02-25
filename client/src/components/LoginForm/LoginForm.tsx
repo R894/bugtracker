@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material'
 import { useRouter } from 'next/router'
-import { useContext, useState } from 'react'
+import { FormEvent, useContext, useState } from 'react'
 
 const LoginForm = () => {
   const [email, setEmail] = useState('')
@@ -23,9 +23,11 @@ const LoginForm = () => {
     setPassword('')
   }
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: FormEvent) => {
+    e.preventDefault()
     setError(false)
     const response = await loginUser({ email, password })
+    console.log(response)
     clearForm()
     if (response.error !== undefined) {
       setError(true)
@@ -36,40 +38,42 @@ const LoginForm = () => {
   }
   return (
     <Container maxWidth="sm" sx={{ minWidth: '320px', padding: '12px' }}>
-      <Stack spacing={1}>
-        <Typography variant="h5" sx={{ textAlign: 'center' }}>
-          Login
-        </Typography>
-        <TextField
-          id="standard-basic"
-          label="Email"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value)
-          }}
-          variant="standard"
-        />
-        <TextField
-          id="standard-basic"
-          label="Password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value)
-          }}
-          variant="standard"
-        />
-        <Button
-          variant="contained"
-          onClick={() => {
-            handleLogin()
-          }}
-        >
-          Login
-        </Button>
-        <Alert severity="error" sx={{ display: error ? 'flex' : 'none' }}>
-          Error: {errMessage}
-        </Alert>
-      </Stack>
+      <form
+        onSubmit={(e) => {
+          handleLogin(e)
+        }}
+      >
+        <Stack spacing={1}>
+          <Typography variant="h5" sx={{ textAlign: 'center' }}>
+            Login
+          </Typography>
+          <TextField
+            id="standard-basic"
+            label="Email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value)
+            }}
+            variant="standard"
+          />
+          <TextField
+            id="standard-basic"
+            type="password"
+            label="Password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value)
+            }}
+            variant="standard"
+          />
+          <Button variant="contained" type="submit">
+            Login
+          </Button>
+          <Alert severity="error" sx={{ display: error ? 'flex' : 'none' }}>
+            Error: {errMessage}
+          </Alert>
+        </Stack>
+      </form>
     </Container>
   )
 }
