@@ -93,6 +93,8 @@ func scanProject(rows *sql.Rows) (aggregate.Project, error) {
 		&project.Name,
 		&project.Description,
 		&project.OwnerId,
+		&project.CreatedAt,
+		&project.UpdatedAt,
 	)
 	return project, err
 }
