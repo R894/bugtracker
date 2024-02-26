@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 )
@@ -47,6 +48,20 @@ func (p *ProjectHandler) GetProjects(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	projects, err := p.service.GetProjects(ctx)
+	if err != nil {
+		log.Println("Error getting Projects: ", err)
+		response.InternalError(w)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, projects)
+}
+
+func (p *ProjectHandler) GetProjectsByOwnerId(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	id := chi.URLParam(r, "userId")
+
+	projects, err := p.service.GetProjectsByOwnerId(ctx, id)
 	if err != nil {
 		log.Println("Error getting Projects: ", err)
 		response.InternalError(w)

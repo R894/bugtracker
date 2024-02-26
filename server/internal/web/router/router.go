@@ -47,6 +47,7 @@ func SetupRouter(db *sql.DB) (*chi.Mux, error) {
 	r.Route("/projects", func(r chi.Router) {
 		mw.ApplyAuthMiddleware(r)
 		r.Post("/", appHandler.Project.CreateNewProject)
+		r.Get("/{userId}", appHandler.Project.GetProjectsByOwnerId)
 	})
 
 	r.Route("/users", func(r chi.Router) {

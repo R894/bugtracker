@@ -29,6 +29,10 @@ func (s *ProjectService) GetProjectByID(ctx context.Context, projectId string) (
 	return s.repo.GetById(ctx, projectId)
 }
 
+func (s *ProjectService) GetProjectsByOwnerId(ctx context.Context, userId string) ([]aggregate.Project, error) {
+	return s.repo.GetProjectsByOwnerId(ctx, userId)
+}
+
 func (s *ProjectService) GetProjects(ctx context.Context) ([]aggregate.Project, error) {
 	return s.repo.GetProjects(ctx)
 }
