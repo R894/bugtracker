@@ -1,6 +1,7 @@
 import { LoginRequest, RegisterRequest, User } from '@/api/models/user'
+import { getProjectsByUsername } from '@/api/projectService'
 import { createUser, postLogin } from '@/api/userService'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 export type UserContextType = {
   token: string
@@ -9,6 +10,7 @@ export type UserContextType = {
   loginUser: typeof postLogin
   registerUser: typeof createUser
   logoutUser: () => void
+  updateUserProjects: () => {}
 }
 
 export const UserContext = React.createContext<UserContextType | null>(null)
@@ -28,6 +30,16 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [])
 
+  const updateUserProjects = useCallback(async () => {
+    if (!user || !user.id || !token) return
+    const response = await getProjectsByUsername(user.username, token)
+    console.log(response)
+    if (response.error) {
+      return
+    }
+    setUser((prevUser) => ({ ...prevUser, projects: response }) as User)
+  }, [token, user])
+
   useEffect(() => {
     console.log(user?.projects)
   }, [user])
@@ -43,6 +55,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     const currentUser = response.user
     setToken(currentToken)
     setUser(currentUser)
+    localStorage.setItem('user', JSON.stringify(currentUser))
     localStorage.setItem('token', currentToken)
     return response
   }
@@ -59,12 +72,21 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const logoutUser = () => {
     setIsLoggedIn(false)
     setToken('')
+    setUser(null)
     localStorage.removeItem('token')
   }
 
   return (
     <UserContext.Provider
-      value={{ loginUser, user, registerUser, isLoggedIn, logoutUser, token }}
+      value={{
+        loginUser,
+        user,
+        registerUser,
+        updateUserProjects,
+        isLoggedIn,
+        logoutUser,
+        token,
+      }}
     >
       {children}
     </UserContext.Provider>
