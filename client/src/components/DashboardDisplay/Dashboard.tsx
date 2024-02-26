@@ -11,10 +11,18 @@ import {
   TableRow,
 } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
+import moment from 'moment'
 
 const Dashboard = () => {
-  const { token } = useContext(UserContext) as UserContextType
+  const { token, updateUserProjects } = useContext(
+    UserContext,
+  ) as UserContextType
   const [bugs, setBugs] = useState<Bug[]>([])
+
+  useEffect(() => {
+    updateUserProjects()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     async function fetchBugs() {
@@ -51,7 +59,9 @@ const Dashboard = () => {
                 <TableCell align="right">{row.priority}</TableCell>
                 <TableCell align="right">{row.status}</TableCell>
                 <TableCell align="right">{row.asignee}</TableCell>
-                <TableCell align="right">{row.createdAt.toLocaleString('en-GB')}</TableCell>
+                <TableCell align="right">
+                  {moment(row.createdAt).format('MMM Do YY')}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
