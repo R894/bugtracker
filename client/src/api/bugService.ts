@@ -13,6 +13,6 @@ export const getBugById = async (bugId: string) => {
     return get(`bugs/${bugId}`)
 }
 
-export const getBugsByProjectId = async (projectId: string) => {
-    return get(`bugs/projects/${projectId}`)
+export const getBugsByProjectId = async (projectId: string, token: string) => {
+    return get(`bugs/projects/${projectId}`, token)
 }
