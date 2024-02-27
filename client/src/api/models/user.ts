@@ -1,8 +1,10 @@
+import { Project } from "./project"
+
 export interface User {
   id: string
   username: string
   email: string
-  projects: string[]
+  projects: Project[]
   createdAt: Date
   updatedAt: Date
 }
