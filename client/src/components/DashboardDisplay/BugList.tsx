@@ -1,6 +1,4 @@
-import { getBugs } from '@/api/bugService'
 import { Bug } from '@/api/models/bug'
-import { UserContext, UserContextType } from '@/context/UserContext'
 import {
   Paper,
   Table,
@@ -10,30 +8,9 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
 import moment from 'moment'
 
-const Dashboard = () => {
-  const { token, updateUserProjects } = useContext(
-    UserContext,
-  ) as UserContextType
-  const [bugs, setBugs] = useState<Bug[]>([])
-
-  useEffect(() => {
-    updateUserProjects()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    async function fetchBugs() {
-      if (!token) return
-      const response: Bug[] = await getBugs(token)
-      setBugs(response)
-      console.log(response)
-    }
-    fetchBugs()
-  }, [token])
-
+const BugList = ({bugs}:{bugs: Bug[]}) => {
   return (
     <div style={{ padding: '16px' }}>
       <TableContainer component={Paper}>
@@ -48,7 +25,7 @@ const Dashboard = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {bugs.map((row) => (
+            {bugs.length >= 1 && bugs.map((row) => (
               <TableRow
                 key={row.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -71,4 +48,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default BugList

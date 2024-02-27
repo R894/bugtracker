@@ -1,4 +1,4 @@
-import DashboardDisplay from '@/components/DashboardDisplay/Dashboard'
+import DashboardDisplay from '@/components/DashboardDisplay/DashboardDisplay'
 import Footer from '@/components/Footer/Footer'
 import NavBar from '@/components/NavBar/NavBar'
 import Head from 'next/head'
@@ -13,7 +13,7 @@ export default function Dashboard() {
       <main>
         <NavBar />
         <div className="layout">
-          <DashboardDisplay />
+          <DashboardDisplay/>
         </div>
         <Footer />
       </main>

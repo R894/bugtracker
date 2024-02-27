@@ -30,6 +30,14 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [])
 
+  useEffect(() => {
+    const u = localStorage.getItem('user')
+    if (u && u != '') {
+      console.log(JSON.parse(u))
+      setUser(JSON.parse(u))
+    }
+  }, [])
+
   const updateUserProjects = useCallback(async () => {
     if (!user || !user.id || !token) return
     const response = await getProjectsByUsername(user.username, token)
@@ -37,6 +45,9 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     if (response.error) {
       return
     }
+    let u = JSON.parse(localStorage.getItem('user') || '')
+    u.projects = response
+    localStorage.setItem('user', JSON.stringify(u))
     setUser((prevUser) => ({ ...prevUser, projects: response }) as User)
   }, [token, user])
 
