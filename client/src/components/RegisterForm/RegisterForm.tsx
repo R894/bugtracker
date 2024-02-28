@@ -50,7 +50,6 @@ const RegisterForm = () => {
             Register
           </Typography>
           <TextField
-            id="standard-basic"
             label="Username"
             variant="standard"
             onChange={(e) => {
@@ -59,7 +58,6 @@ const RegisterForm = () => {
             value={username}
           />
           <TextField
-            id="standard-basic"
             label="Email"
             variant="standard"
             onChange={(e) => {
@@ -68,7 +66,6 @@ const RegisterForm = () => {
             value={email}
           />
           <TextField
-            id="standard-basic"
             type="password"
             label="Password"
             variant="standard"

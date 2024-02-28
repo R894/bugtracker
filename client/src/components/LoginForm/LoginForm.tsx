@@ -48,7 +48,6 @@ const LoginForm = () => {
             Login
           </Typography>
           <TextField
-            id="standard-basic"
             label="Email"
             value={email}
             onChange={(e) => {
@@ -57,7 +56,6 @@ const LoginForm = () => {
             variant="standard"
           />
           <TextField
-            id="standard-basic"
             type="password"
             label="Password"
             value={password}
