@@ -1,7 +1,7 @@
 import { LoginRequest, RegisterRequest, User } from '@/api/models/user'
 import { getProjectsByUsername } from '@/api/projectService'
 import { createUser, postLogin } from '@/api/userService'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 
 export type UserContextType = {
   token: string
@@ -105,3 +105,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 }
 
 export default UserProvider
+
+export const useUserContext = () => {
+  return useContext(UserContext) as UserContextType
+}
