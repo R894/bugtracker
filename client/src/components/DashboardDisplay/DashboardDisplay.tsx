@@ -7,6 +7,7 @@ import { Bug } from '@/api/models/bug'
 import CreateProjectModal from './CreateProjectModal'
 import { Stack } from '@mui/material'
 import { Project } from '@/api/models/project'
+import CreateBugModal from './CreateBugModal'
 
 const DashboardDisplay = () => {
   const { updateUserProjects, user, token } = useContext(
@@ -36,11 +37,16 @@ const DashboardDisplay = () => {
       <div style={{ padding: '16px' }}>
         <Stack direction={'row'}>
           <ProjectsMenu
-            buttonText={selectedProject ? selectedProject.name : 'Select Project'}
+            buttonText={
+              selectedProject ? selectedProject.name : 'Select Project'
+            }
             projects={user ? user.projects : []}
             stateChanger={setSelectedProject}
           />
           <CreateProjectModal />
+          {selectedProject ? (
+            <CreateBugModal projectId={selectedProject.id} />
+          ) : null}
         </Stack>
         <BugList bugs={bugs} />
       </div>
