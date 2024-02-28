@@ -23,12 +23,15 @@ const CreateProjectModal = () => {
   const [open, setOpen] = useState(false)
   const [projectName, setProjectName] = useState('')
   const [projectDescription, setProjectDescription] = useState('')
-  const {token} = useContext(UserContext) as UserContextType
+  const {token, updateUserProjects} = useContext(UserContext) as UserContextType
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
   const postProject = async () => {
-    await createProject({name: projectName, description: projectDescription}, token)
+    const response = await createProject({name: projectName, description: projectDescription}, token)
+    console.log(response)
+    updateUserProjects()
+    handleClose()
   }
 
   return (
