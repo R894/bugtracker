@@ -9,3 +9,9 @@ export interface Bug {
   createdAt: Date
   updatedAt: Date
 }
+
+export interface CreateBugRequest {
+  title: string
+  description: string
+  projectId: string
+}
