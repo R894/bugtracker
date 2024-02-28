@@ -12,7 +12,6 @@ import moment from 'moment'
 
 const BugList = ({bugs}:{bugs: Bug[]}) => {
   return (
-    <div style={{ padding: '16px' }}>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 1080 }} aria-label="Bug Table">
           <TableHead>
@@ -25,7 +24,7 @@ const BugList = ({bugs}:{bugs: Bug[]}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {bugs.length >= 1 && bugs.map((row) => (
+            {bugs && bugs.length >= 1 && bugs.map((row) => (
               <TableRow
                 key={row.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -44,7 +43,6 @@ const BugList = ({bugs}:{bugs: Bug[]}) => {
           </TableBody>
         </Table>
       </TableContainer>
-    </div>
   )
 }
 
