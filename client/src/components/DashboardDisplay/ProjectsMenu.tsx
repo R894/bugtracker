@@ -7,9 +7,11 @@ import { Project } from '@/api/models/project'
 const ProjectsMenu = ({
   projects,
   stateChanger,
+  buttonText
 }: {
   projects: Project[]
-  stateChanger: Dispatch<SetStateAction<string>>
+  stateChanger: Dispatch<SetStateAction<Project | null>>
+  buttonText: string
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
@@ -18,9 +20,9 @@ const ProjectsMenu = ({
     setAnchorEl(event.currentTarget)
   }
 
-  const handleClose = (projectId: string) => {
+  const handleClose = (project: Project) => {
     setAnchorEl(null)
-    stateChanger(projectId)
+    stateChanger(project)
   }
   return (
     <div>
@@ -31,7 +33,7 @@ const ProjectsMenu = ({
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
       >
-        Select Project
+        {buttonText}
       </Button>
       <Menu
         id="basic-menu"
@@ -43,7 +45,7 @@ const ProjectsMenu = ({
         }}
       >
         {projects && projects.map((project) => (
-          <MenuItem key={project.id} onClick={() => handleClose(project.id)}>
+          <MenuItem key={project.id} onClick={() => handleClose(project)}>
             {project.name}
           </MenuItem>
         ))}

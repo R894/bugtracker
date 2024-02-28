@@ -4,12 +4,15 @@ import ProjectsMenu from './ProjectsMenu'
 import { UserContext, UserContextType } from '@/context/UserContext'
 import { getBugsByProjectId } from '@/api/bugService'
 import { Bug } from '@/api/models/bug'
+import CreateProjectModal from './CreateProjectModal'
+import { Stack } from '@mui/material'
+import { Project } from '@/api/models/project'
 
 const DashboardDisplay = () => {
   const { updateUserProjects, user, token } = useContext(
     UserContext,
   ) as UserContextType
-  const [selectedProjectId, setSelectedProjectId] = useState('')
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [bugs, setBugs] = useState<Bug[]>([])
 
   useEffect(() => {
@@ -18,23 +21,29 @@ const DashboardDisplay = () => {
   }, [])
 
   useEffect(() => {
-    if (!token) return
+    if (!token || selectedProject == null) return
     const getBugs = async () => {
-      const response = await getBugsByProjectId(selectedProjectId, token)
-      console.log("project id", selectedProjectId)
+      const response = await getBugsByProjectId(selectedProject.id, token)
+      console.log('project id', selectedProject.id)
       console.log(response)
       setBugs(response)
     }
     getBugs()
-  }, [selectedProjectId, token])
+  }, [selectedProject, token])
 
   return (
     <>
-      <ProjectsMenu
-        projects={user ? user.projects : []}
-        stateChanger={setSelectedProjectId}
-      />
-      <BugList bugs={bugs} />
+      <div style={{ padding: '16px' }}>
+        <Stack direction={'row'}>
+          <ProjectsMenu
+            buttonText={selectedProject ? selectedProject.name : 'Select Project'}
+            projects={user ? user.projects : []}
+            stateChanger={setSelectedProject}
+          />
+          <CreateProjectModal />
+        </Stack>
+        <BugList bugs={bugs} />
+      </div>
     </>
   )
 }
