@@ -5,3 +5,17 @@ export interface Comment {
   createdAt: Date
   updatedAt: Date
 }
+
+export interface newCommentRequest {
+  bugId: string
+  content: string
+}
+
+export interface updateCommentRequest {
+  commentId: string
+  content: string
+}
+
+export interface deleteCommentRequest {
+  commentId: string
+}
