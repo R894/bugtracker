@@ -1,6 +1,5 @@
-import Footer from '@/components/Footer/Footer'
 import LoginForm from '@/components/LoginForm/LoginForm'
-import NavBar from '@/components/NavBar/NavBar'
+import Layout from '@/layouts/layout'
 import Head from 'next/head'
 
 export default function Login() {
@@ -11,11 +10,9 @@ export default function Login() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <NavBar />
-        <div className="layout">
+        <Layout>
           <LoginForm />
-        </div>
-        <Footer />
+        </Layout>
       </main>
     </>
   )
