@@ -1,4 +1,5 @@
 import BugForm from '@/components/BugForm/BugForm'
+import CommentForm from '@/components/Comments/CommentForm'
 import Layout from '@/layouts/Layout'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -16,6 +17,7 @@ export default function Home() {
       <main>
         <Layout>
           {router.query.slug && <BugForm bugId={router.query.slug as string} />}
+          <CommentForm/>
         </Layout>
       </main>
     </>
