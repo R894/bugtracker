@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Hero from '@/components/Hero/Hero'
 import FeaturesDisplay from '@/components/FeaturesDisplay/FeaturesDisplay'
-import Layout from '@/layouts/layout'
+import Layout from '@/layouts/Layout'
 
 export default function Home() {
   return (

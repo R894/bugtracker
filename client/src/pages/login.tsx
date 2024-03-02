@@ -1,5 +1,5 @@
 import LoginForm from '@/components/LoginForm/LoginForm'
-import Layout from '@/layouts/layout'
+import Layout from '@/layouts/Layout'
 import Head from 'next/head'
 
 export default function Login() {
