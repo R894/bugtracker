@@ -1,5 +1,5 @@
 import DashboardDisplay from '@/components/DashboardDisplay/DashboardDisplay'
-import Layout from '@/layouts/layout'
+import Layout from '@/layouts/Layout'
 import Head from 'next/head'
 
 export default function Dashboard() {
