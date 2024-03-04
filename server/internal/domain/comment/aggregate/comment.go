@@ -7,11 +7,11 @@ import (
 )
 
 type Comment struct {
-	ID        string
-	BugId     string
-	Content   string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        string    `json:"id"`
+	BugId     string    `json:"bugId"`
+	Content   string    `json:"content"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 func NewComment(bugId, content string) Comment {
