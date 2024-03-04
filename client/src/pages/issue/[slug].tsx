@@ -1,11 +1,15 @@
 import BugForm from '@/components/BugForm/BugForm'
 import CommentForm from '@/components/Comments/CommentForm'
+import CommentList from '@/components/Comments/CommentList'
+import { useUserContext } from '@/context/UserContext'
 import Layout from '@/layouts/Layout'
+import { Stack } from '@mui/material'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 export default function Home() {
   const router = useRouter()
+  const { token } = useUserContext()
   return (
     <>
       <Head>
@@ -16,8 +20,13 @@ export default function Home() {
       </Head>
       <main>
         <Layout>
-          {router.query.slug && <BugForm bugId={router.query.slug as string} />}
-          <CommentForm/>
+          <Stack width={'100%'} minWidth={'320px'} gap={1}>
+            {router.query.slug && (
+              <BugForm bugId={router.query.slug as string} />
+            )}
+            <CommentList bugId={router.query.slug as string} token={token} />
+            <CommentForm bugId={router.query.slug as string} token={token} />
+          </Stack>
         </Layout>
       </main>
     </>
