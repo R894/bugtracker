@@ -1,8 +1,12 @@
 import { deleteCommentRequest, newCommentRequest, updateCommentRequest } from './models/comment'
-import { del, post, put } from './utils'
+import { del, get, post, put } from './utils'
 
 export const createComment = async (commentData: newCommentRequest, token: string) => {
   return post('comments', commentData, token)
+}
+
+export const getCommentsByBugId = async(bugId: string, token: string) => {
+  return get(`comments/${bugId}`, token)
 }
 
 export const updateComment = async (commentData: updateCommentRequest, token: string) => {
