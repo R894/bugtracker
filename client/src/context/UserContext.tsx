@@ -1,3 +1,4 @@
+import { Project } from '@/api/models/project'
 import { LoginRequest, RegisterRequest, User } from '@/api/models/user'
 import { getProjectsByUsername } from '@/api/projectService'
 import { createUser, postLogin } from '@/api/userService'
@@ -11,6 +12,8 @@ export type UserContextType = {
   registerUser: typeof createUser
   logoutUser: () => void
   updateUserProjects: () => {}
+  selectedProject: Project | null
+  setSelectedProject: React.Dispatch<React.SetStateAction<Project | null>>
 }
 
 export const UserContext = React.createContext<UserContextType | null>(null)
@@ -20,6 +23,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [token, setToken] = useState('')
   const [user, setUser] = useState<User | null>(null)
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
@@ -97,6 +101,8 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         isLoggedIn,
         logoutUser,
         token,
+        selectedProject,
+        setSelectedProject
       }}
     >
       {children}

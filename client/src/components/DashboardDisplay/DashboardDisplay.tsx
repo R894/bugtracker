@@ -6,14 +6,12 @@ import { getBugsByProjectId } from '@/api/bugService'
 import { Bug } from '@/api/models/bug'
 import CreateProjectModal from './CreateProjectModal'
 import { Stack } from '@mui/material'
-import { Project } from '@/api/models/project'
 import CreateBugModal from './CreateBugModal'
 
 const DashboardDisplay = () => {
-  const { updateUserProjects, user, token } = useContext(
+  const { selectedProject, setSelectedProject, updateUserProjects, user, token } = useContext(
     UserContext,
   ) as UserContextType
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [bugs, setBugs] = useState<Bug[]>([])
 
   useEffect(() => {
