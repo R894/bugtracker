@@ -28,6 +28,7 @@ main {
 }
 .layout {
   display: flex;
+  padding: 12px;
   flex-direction: column;
   max-width: 1080px;
   align-items: center;
