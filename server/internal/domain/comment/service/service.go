@@ -42,3 +42,11 @@ func (service *CommentService) DeleteComment(ctx context.Context, commentId stri
 	}
 	return nil
 }
+
+func (service *CommentService) GetByBugId(ctx context.Context, bugId string) ([]aggregate.Comment, error) {
+	bugs, err := service.repo.GetCommentsByBugId(ctx, bugId)
+	if err != nil {
+		return nil, err
+	}
+	return bugs, nil
+}

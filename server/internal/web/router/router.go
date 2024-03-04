@@ -39,6 +39,7 @@ func SetupRouter(db *sql.DB) (*chi.Mux, error) {
 
 	r.Route("/comments", func(r chi.Router) {
 		mw.ApplyAuthMiddleware(r)
+		r.Get("/{bugId}", appHandler.Comment.GetCommentsByBugId)
 		r.Post("/", appHandler.Comment.CreateNewComment)
 		r.Put("/", appHandler.Comment.UpdateComment)
 		r.Delete("/", appHandler.Comment.DeleteComment)

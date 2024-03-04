@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 )
@@ -86,4 +87,18 @@ func (c *CommentHandler) DeleteComment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.OK(w)
+}
+
+func (c *CommentHandler) GetCommentsByBugId(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	bugId := chi.URLParam(r, "bugId")
+
+	comments, err := c.service.GetByBugId(ctx, bugId)
+	if err != nil {
+		log.Println("Error getting comments by bug ID: ", err)
+		response.InternalError(w)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, comments)
 }
