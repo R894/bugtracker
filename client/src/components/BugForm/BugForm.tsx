@@ -22,7 +22,8 @@ const BugDisplay = ({ bugId }: { bugId: string }) => {
     <Card
       variant="outlined"
       sx={{
-        minHeight: '72px',
+        minWidth: '600px',
+        minHeight: '200px',
         width: '100%',
       }}
     >
