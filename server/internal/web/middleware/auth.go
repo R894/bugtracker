@@ -3,6 +3,7 @@ package middleware
 import (
 	"bugtracker/internal/web/response"
 	"context"
+	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -36,6 +37,14 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), ContextKeyUsername, username)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
+}
+
+func GetContextUsername(ctx context.Context) (string, error) {
+	username := ctx.Value(ContextKeyUsername)
+	if username == nil {
+		return "", errors.New("username not found in context")
+	}
+	return username.(string), nil
 }
 
 func extractToken(r *http.Request) string {
