@@ -2,6 +2,7 @@ export interface Comment {
   id: string
   bugId: string
   content: string
+  userId: string
   createdAt: Date
   updatedAt: Date
 }
