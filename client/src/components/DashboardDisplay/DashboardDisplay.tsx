@@ -9,7 +9,7 @@ import { Stack } from '@mui/material'
 import CreateBugModal from './CreateBugModal'
 
 const DashboardDisplay = () => {
-  const { selectedProject, setSelectedProject, updateUserProjects, user, token } = useContext(
+  const { selectedProject, setSelectedProject, updateUserProjects, user, token, logoutUser } = useContext(
     UserContext,
   ) as UserContextType
   const [bugs, setBugs] = useState<Bug[]>([])
@@ -23,12 +23,14 @@ const DashboardDisplay = () => {
     if (!token || selectedProject == null) return
     const getBugs = async () => {
       const response = await getBugsByProjectId(selectedProject.id, token)
-      console.log('project id', selectedProject.id)
-      console.log(response)
+      if(response.code == 401) {
+        logoutUser()
+        return
+      }
       setBugs(response)
     }
     getBugs()
-  }, [selectedProject, token])
+  }, [selectedProject, token, logoutUser])
 
   return (
     <>
