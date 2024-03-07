@@ -46,6 +46,10 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     if (!user || !user.id || !token) return
     const response = await getProjectsByUsername(user.username, token)
     console.log(response)
+    if (response.code == 401) {
+      logoutUser()
+      return
+    }
     if (response.error) {
       return
     }
