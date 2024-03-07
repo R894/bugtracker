@@ -14,5 +14,5 @@ export const getBugById = async (bugId: string, token: string) => {
 }
 
 export const getBugsByProjectId = async (projectId: string, token: string) => {
-    return get(`bugs/projects/${projectId}`, token) as Promise<Bug[]>
+    return get(`bugs/projects/${projectId}`, token)
 }
