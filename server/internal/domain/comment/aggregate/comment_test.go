@@ -9,7 +9,8 @@ import (
 func TestCreateComment(t *testing.T) {
 	bugId := "123123"
 	content := "hello"
-	comment := NewComment(bugId, content)
+	userId := "user"
+	comment := NewComment(bugId, content, userId)
 
 	assert.Equal(t, comment.BugId, bugId)
 	assert.Equal(t, comment.Content, content)
@@ -22,7 +23,8 @@ func TestCreateComment(t *testing.T) {
 func TestEditComment(t *testing.T) {
 	bugId := "123123"
 	content := "hello"
-	comment := NewComment(bugId, content)
+	userId := "user"
+	comment := NewComment(bugId, content, userId)
 	updatedContent := "test"
 	comment.EditComment(updatedContent)
 

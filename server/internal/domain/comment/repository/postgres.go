@@ -19,8 +19,8 @@ func NewPostgresCommentRepository(db *sql.DB) *PostgresCommentRepository {
 }
 
 func (c *PostgresCommentRepository) SaveComment(ctx context.Context, comment aggregate.Comment) error {
-	query := sq.Insert("comments").Columns("id", "bug_id", "content", "created_at", "updated_at").
-		Values(comment.ID, comment.BugId, comment.Content, comment.CreatedAt, comment.UpdatedAt).PlaceholderFormat(sq.Dollar).RunWith(c.db)
+	query := sq.Insert("comments").Columns("id", "bug_id", "user_id", "content", "created_at", "updated_at").
+		Values(comment.ID, comment.BugId, comment.UserId, comment.Content, comment.CreatedAt, comment.UpdatedAt).PlaceholderFormat(sq.Dollar).RunWith(c.db)
 
 	_, err := query.ExecContext(ctx)
 	if err != nil {
@@ -64,7 +64,7 @@ func (c *PostgresCommentRepository) GetCommentsByBugId(ctx context.Context, bugI
 	var comments []aggregate.Comment
 	for rows.Next() {
 		var comment aggregate.Comment
-		if err := rows.Scan(&comment.ID, &comment.BugId, &comment.Content, &comment.CreatedAt, &comment.UpdatedAt); err != nil {
+		if err := rows.Scan(&comment.ID, &comment.BugId, &comment.UserId, &comment.Content, &comment.CreatedAt, &comment.UpdatedAt); err != nil {
 			return nil, err
 		}
 		comments = append(comments, comment)

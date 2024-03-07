@@ -10,15 +10,17 @@ type Comment struct {
 	ID        string    `json:"id"`
 	BugId     string    `json:"bugId"`
 	Content   string    `json:"content"`
+	UserId    string    `json:"userId"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-func NewComment(bugId, content string) Comment {
+func NewComment(bugId, content, userId string) Comment {
 	return Comment{
 		ID:        generateUniqueID(),
 		BugId:     bugId,
 		Content:   content,
+		UserId:    userId,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}

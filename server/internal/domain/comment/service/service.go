@@ -17,8 +17,8 @@ func NewCommentService(db *sql.DB) *CommentService {
 	}
 }
 
-func (service *CommentService) NewComment(ctx context.Context, bugId, content string) error {
-	comment := aggregate.NewComment(bugId, content)
+func (service *CommentService) NewComment(ctx context.Context, bugId, content, userId string) error {
+	comment := aggregate.NewComment(bugId, content, userId)
 	err := service.repo.SaveComment(ctx, comment)
 	if err != nil {
 		return err

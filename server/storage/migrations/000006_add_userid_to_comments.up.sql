@@ -1,0 +1,2 @@
+ALTER TABLE comments
+ADD COLUMN user_id VARCHAR(255) DEFAULT 'unknown';

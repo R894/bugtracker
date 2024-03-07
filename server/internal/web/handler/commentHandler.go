@@ -2,6 +2,7 @@ package handler
 
 import (
 	"bugtracker/internal/domain/comment/service"
+	"bugtracker/internal/web/middleware"
 	"bugtracker/internal/web/response"
 	"encoding/json"
 	"log"
@@ -34,14 +35,20 @@ type deleteCommentRequest struct {
 
 func (c *CommentHandler) CreateNewComment(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	username, err := middleware.GetContextUsername(ctx)
+	if err != nil {
+		response.Unauthorized(w)
+		return
+	}
+
 	var req newCommentRequest
-	err := json.NewDecoder(r.Body).Decode(&req)
+	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		response.BadRequest(w)
 		return
 	}
 
-	err = c.service.NewComment(ctx, req.BugId, req.Content)
+	err = c.service.NewComment(ctx, req.BugId, req.Content, username)
 	if err != nil {
 		log.Println("Error creating comment: ", err)
 		response.InternalError(w)
