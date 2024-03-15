@@ -66,9 +66,6 @@ func (r *PostgresProjectRepository) GetProjectsByOwnerId(ctx context.Context, us
 		if err != nil {
 			return nil, err
 		}
-		if err != nil {
-			return nil, err
-		}
 		projects = append(projects, project)
 	}
 	return projects, nil
