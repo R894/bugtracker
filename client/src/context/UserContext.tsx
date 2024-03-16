@@ -106,7 +106,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         logoutUser,
         token,
         selectedProject,
-        setSelectedProject
+        setSelectedProject,
       }}
     >
       {children}
