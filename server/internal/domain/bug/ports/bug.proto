@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package bug;
+
+option go_package="github.com/R894/domains/bug/ports";
+import "google/protobuf/timestamp.proto";
+
+service BugRepositoryService {
+    rpc SaveBug(SaveBugRequest) returns (EmptyResponse) {
+    }
+    rpc GetBugByID(GetBugByIDRequest) returns (BugResponse) {
+    }
+    rpc GetBugsByProjectID(GetBugsByProjectIDRequest) returns (GetBugsByProjectIDResponse) {
+    }
+    rpc GetBugs(GetBugsRequest) returns (GetBugsResponse) {
+    }
+    rpc AssignBugTo(AssignBugToRequest) returns (EmptyResponse) {
+    }
+    rpc UpdateBug(UpdateBugRequest) returns (EmptyResponse) {
+    }
+    rpc DeleteBug(DeleteBugRequest) returns (EmptyResponse) {
+    }
+}
+
+message SaveBugRequest {
+    string description = 1;
+    string title = 2;
+}
+
+message GetBugByIDRequest {
+    string bug_id = 1;
+}
+
+message GetBugsByProjectIDRequest {
+    string project_id = 1;
+}
+
+message GetBugsRequest {}
+
+message AssignBugToRequest {
+    string bug_id = 1;
+    string username = 2;
+}
+
+message UpdateBugRequest {
+    string bug_id = 1;
+}
+
+message DeleteBugRequest {
+    string bug_id = 1;
+}
+
+message EmptyResponse {}
+
+message BugResponse {
+    string bug_id = 1;
+    string title = 2;
+    string description = 3;
+    string status = 4;
+    string priority = 5;
+    string assignee = 6;
+    string project_id = 7;
+    google.protobuf.Timestamp created_at = 8;
+    google.protobuf.Timestamp updated_at = 9;
+}
+
+message GetBugsByProjectIDResponse {
+    repeated BugResponse bugs = 1;
+}
+
+message GetBugsResponse {
+    repeated BugResponse bugs = 1;
+}
