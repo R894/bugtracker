@@ -1,14 +1,15 @@
 package service
 
 import (
-	"bugtracker/internal/domain/bug/aggregate"
-	"bugtracker/internal/domain/bug/repository"
+	"bugtracker/internal/domain/bug/adapters/repository"
+	"bugtracker/internal/domain/bug/core/domain/aggregate"
+	"bugtracker/internal/domain/bug/ports"
 	"context"
 	"database/sql"
 )
 
 type BugService struct {
-	bugRepository repository.BugRepository
+	bugRepository ports.BugRepository
 }
 
 func NewBugService(db *sql.DB) *BugService {

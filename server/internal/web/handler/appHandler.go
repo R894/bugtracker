@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"bugtracker/internal/domain/bug/service"
+	"bugtracker/internal/domain/bug/core/service"
 	commentService "bugtracker/internal/domain/comment/service"
 	projectService "bugtracker/internal/domain/project/service"
 	userService "bugtracker/internal/domain/user/service"

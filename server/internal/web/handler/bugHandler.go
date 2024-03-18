@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"bugtracker/internal/domain/bug/aggregate"
-	"bugtracker/internal/domain/bug/service"
+	"bugtracker/internal/domain/bug/core/domain/aggregate"
+	"bugtracker/internal/domain/bug/core/service"
 	"bugtracker/internal/web/response"
 	"encoding/json"
 	"log"

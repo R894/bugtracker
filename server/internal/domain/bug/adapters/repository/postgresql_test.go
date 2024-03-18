@@ -3,7 +3,7 @@ package repository
 import (
 	config "bugtracker"
 	"bugtracker/internal/database"
-	"bugtracker/internal/domain/bug/aggregate"
+	"bugtracker/internal/domain/bug/core/domain/aggregate"
 	"context"
 	"log"
 	"testing"

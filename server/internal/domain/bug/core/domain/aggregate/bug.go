@@ -1,7 +1,7 @@
 package aggregate
 
 import (
-	"bugtracker/internal/domain/bug/entity"
+	"bugtracker/internal/domain/bug/core/domain/entity"
 	"time"
 
 	"github.com/google/uuid"

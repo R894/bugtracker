@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"bugtracker/internal/domain/bug/aggregate"
+	"bugtracker/internal/domain/bug/core/domain/aggregate"
 	"context"
 	"database/sql"
 
