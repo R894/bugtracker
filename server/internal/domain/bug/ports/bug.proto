@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package bug;
 
-option go_package="github.com/R894/domains/bug/ports";
+option go_package="github.com/R894/bugtracker/internal/domain/bug/core/domain/ports";
 import "google/protobuf/timestamp.proto";
 
 service BugRepositoryService {
