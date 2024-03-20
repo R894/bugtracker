@@ -1,6 +1,8 @@
 package grpc
 
 import (
+	"bugtracker/internal/database"
+	"bugtracker/internal/domain/bug/adapters/repository"
 	"bugtracker/internal/domain/bug/ports"
 	"log"
 	"net"
@@ -33,9 +35,17 @@ func GrpcServer() {
 		}
 	}(lis)
 
-	log.Printf("listening at %s\n", addr)
 	opts := []grpc.ServerOption{}
 	s := grpc.NewServer(opts...)
+
+	db, err := database.NewPostgresTestDB()
+	if err != nil {
+		log.Fatalf("failed to connect to db: %v\n", err)
+	}
+
+	ports.RegisterBugRepositoryServiceServer(s, &server{d: repository.NewPostgresBugRepository(db.Db)})
+
+	log.Printf("listening at %s\n", addr)
 
 	defer s.Stop()
 	if err := s.Serve(lis); err != nil {
