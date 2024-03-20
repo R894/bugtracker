@@ -25,6 +25,7 @@ service BugRepositoryService {
 message SaveBugRequest {
     string description = 1;
     string title = 2;
+    string project_id = 3;
 }
 
 message GetBugByIDRequest {
