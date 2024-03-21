@@ -20,7 +20,7 @@ func (s *server) GetBugById(ctx context.Context, in *ports.GetBugByIDRequest) (*
 		return nil, err
 	}
 
-	return &ports.BugResponse{BugId: bug.ID, Title: bug.Title, Description: bug.Description, Status: string(bug.Status), Priority: string(bug.Priority), Assignee: bug.Assignee, ProjectId: bug.ProjectId, CreatedAt: timestamppb.New(bug.CreatedAt), UpdatedAt: timestamppb.New(bug.UpdatedAt)}, nil
+	return convertBugToBugResponse(bug), nil
 }
 
 func (s *server) GetBugByProjectId(ctx context.Context, in *ports.GetBugsByProjectIDRequest) (*ports.GetBugsByProjectIDResponse, error) {
@@ -31,7 +31,7 @@ func (s *server) GetBugByProjectId(ctx context.Context, in *ports.GetBugsByProje
 
 	var convertedBugs []*ports.BugResponse
 	for _, bug := range bugs {
-		convertedBugs = append(convertedBugs, &ports.BugResponse{BugId: bug.ID, Title: bug.Title, Description: bug.Description, Status: string(bug.Status), Priority: string(bug.Priority), Assignee: bug.Assignee, ProjectId: bug.ProjectId, CreatedAt: timestamppb.New(bug.CreatedAt), UpdatedAt: timestamppb.New(bug.UpdatedAt)})
+		convertedBugs = append(convertedBugs, convertBugToBugResponse(&bug))
 	}
 	return &ports.GetBugsByProjectIDResponse{Bugs: convertedBugs}, nil
 }
@@ -42,4 +42,8 @@ func (s *server) AssignBugTo(ctx context.Context, in *ports.AssignBugToRequest) 
 		return nil, err
 	}
 	return &ports.EmptyResponse{}, nil
+}
+
+func convertBugToBugResponse(bug *aggregate.Bug) *ports.BugResponse {
+	return &ports.BugResponse{BugId: bug.ID, Title: bug.Title, Description: bug.Description, Status: string(bug.Status), Priority: string(bug.Priority), Assignee: bug.Assignee, ProjectId: bug.ProjectId, CreatedAt: timestamppb.New(bug.CreatedAt), UpdatedAt: timestamppb.New(bug.UpdatedAt)}
 }

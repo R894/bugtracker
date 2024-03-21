@@ -30,7 +30,6 @@ func GrpcServer() {
 
 	defer func(lis net.Listener) {
 		if err := lis.Close(); err != nil {
-
 			log.Fatalf("unexpected error: %v", err)
 		}
 	}(lis)
@@ -38,7 +37,7 @@ func GrpcServer() {
 	opts := []grpc.ServerOption{}
 	s := grpc.NewServer(opts...)
 
-	db, err := database.NewPostgresTestDB()
+	db, err := database.NewPostgresDB()
 	if err != nil {
 		log.Fatalf("failed to connect to db: %v\n", err)
 	}

@@ -1,12 +1,18 @@
 package grpc
 
 import (
+	"bugtracker/internal/domain/bug/ports"
+	"context"
 	"log"
 	"os"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
+
+func GetBugsByProjectID(c ports.BugRepositoryServiceClient, req *ports.GetBugsByProjectIDRequest) (*ports.GetBugsByProjectIDResponse, error) {
+	return c.GetBugsByProjectID(context.TODO(), req)
+}
 
 func GrpcClient() {
 	args := os.Args[1:]
