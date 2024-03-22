@@ -1,28 +1,26 @@
 package grpc
 
 import (
-	"bugtracker/internal/database"
-	"bugtracker/internal/domain/bug/adapters/repository"
+	"bugtracker/internal/domain/bug/core/service"
 	"bugtracker/internal/domain/bug/ports"
 	"log"
 	"net"
-	"os"
 
 	"google.golang.org/grpc"
 )
 
-type server struct {
-	d ports.BugRepository
+type grpcServer struct {
+	bugService service.BugService
 	ports.UnimplementedBugRepositoryServiceServer
 }
 
-func GrpcServer() {
-	args := os.Args[1:]
-	if len(args) == 0 {
-		log.Fatalln("usage: server [IP_ADDR]")
+func NewGrpcServer(bugService service.BugService) *grpcServer {
+	return &grpcServer{
+		bugService: bugService,
 	}
+}
 
-	addr := args[0]
+func (srv *grpcServer) StartServer(addr string) {
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v\n", err)
@@ -36,14 +34,7 @@ func GrpcServer() {
 
 	opts := []grpc.ServerOption{}
 	s := grpc.NewServer(opts...)
-
-	db, err := database.NewPostgresDB()
-	if err != nil {
-		log.Fatalf("failed to connect to db: %v\n", err)
-	}
-
-	ports.RegisterBugRepositoryServiceServer(s, &server{d: repository.NewPostgresBugRepository(db.Db)})
-
+	ports.RegisterBugRepositoryServiceServer(s, srv)
 	log.Printf("listening at %s\n", addr)
 
 	defer s.Stop()

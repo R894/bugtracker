@@ -8,14 +8,13 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func (s *server) SaveBug(ctx context.Context, in *ports.SaveBugRequest) (*ports.EmptyResponse, error) {
-	bug := aggregate.NewBug(aggregate.CreateBugRequest{Title: in.Title, Description: in.Description, ProjectId: in.ProjectId})
-	s.d.SaveBug(ctx, bug)
+func (s *grpcServer) SaveBug(ctx context.Context, in *ports.SaveBugRequest) (*ports.EmptyResponse, error) {
+	s.bugService.CreateBug(ctx, aggregate.CreateBugRequest{Title: in.Title, Description: in.Description, ProjectId: in.ProjectId})
 	return &ports.EmptyResponse{}, nil
 }
 
-func (s *server) GetBugById(ctx context.Context, in *ports.GetBugByIDRequest) (*ports.BugResponse, error) {
-	bug, err := s.d.GetBugByID(ctx, in.BugId)
+func (s *grpcServer) GetBugById(ctx context.Context, in *ports.GetBugByIDRequest) (*ports.BugResponse, error) {
+	bug, err := s.bugService.GetBugByID(ctx, in.BugId)
 	if err != nil {
 		return nil, err
 	}
@@ -23,8 +22,8 @@ func (s *server) GetBugById(ctx context.Context, in *ports.GetBugByIDRequest) (*
 	return convertBugToBugResponse(bug), nil
 }
 
-func (s *server) GetBugByProjectId(ctx context.Context, in *ports.GetBugsByProjectIDRequest) (*ports.GetBugsByProjectIDResponse, error) {
-	bugs, err := s.d.GetBugsByProjectID(ctx, in.ProjectId)
+func (s *grpcServer) GetBugsByProjectId(ctx context.Context, in *ports.GetBugsByProjectIDRequest) (*ports.GetBugsByProjectIDResponse, error) {
+	bugs, err := s.bugService.GetBugsByProjectId(ctx, in.ProjectId)
 	if err != nil {
 		return nil, err
 	}
@@ -36,8 +35,8 @@ func (s *server) GetBugByProjectId(ctx context.Context, in *ports.GetBugsByProje
 	return &ports.GetBugsByProjectIDResponse{Bugs: convertedBugs}, nil
 }
 
-func (s *server) AssignBugTo(ctx context.Context, in *ports.AssignBugToRequest) (*ports.EmptyResponse, error) {
-	err := s.d.AssignBugTo(ctx, in.BugId, in.Username)
+func (s *grpcServer) AssignBugTo(ctx context.Context, in *ports.AssignBugToRequest) (*ports.EmptyResponse, error) {
+	err := s.bugService.AssignBugTo(ctx, in.BugId, in.Username)
 	if err != nil {
 		return nil, err
 	}
