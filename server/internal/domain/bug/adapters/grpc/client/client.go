@@ -1,10 +1,9 @@
-package grpc
+package client
 
 import (
 	"bugtracker/internal/domain/bug/ports"
 	"context"
 	"log"
-	"os"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -14,13 +13,15 @@ func GetBugsByProjectID(c ports.BugRepositoryServiceClient, req *ports.GetBugsBy
 	return c.GetBugsByProjectID(context.TODO(), req)
 }
 
-func GrpcClient() {
-	args := os.Args[1:]
-	if len(args) == 0 {
-		log.Fatalln("usage: client [IP_ADDR]")
-	}
-	addr := args[0]
+func AssignBugTo(c ports.BugRepositoryServiceClient, req *ports.AssignBugToRequest) (*ports.EmptyResponse, error) {
+	return c.AssignBugTo(context.TODO(), req)
+}
 
+func GetBugByID(c ports.BugRepositoryServiceClient, req *ports.GetBugByIDRequest) (*ports.BugResponse, error) {
+	return c.GetBugByID(context.TODO(), req)
+}
+
+func GrpcClient(addr string) ports.BugRepositoryServiceClient {
 	opts := []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	}
@@ -29,9 +30,5 @@ func GrpcClient() {
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
-	defer func(conn *grpc.ClientConn) {
-		if err := conn.Close(); err != nil {
-			log.Fatalf("unexpected error: %v", err)
-		}
-	}(conn)
+	return ports.NewBugRepositoryServiceClient(conn)
 }
