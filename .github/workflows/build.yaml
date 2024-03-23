@@ -1,14 +1,14 @@
-name: Build and Test
+name: Build and Test Backend
 on: [push, pull_request]
 jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout server code
         uses: actions/checkout@v2
-      - name: Change to server directory
-        run: cd server
+        with:
+          path: server
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
