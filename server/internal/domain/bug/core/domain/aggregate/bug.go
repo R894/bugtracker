@@ -1,8 +1,9 @@
 package aggregate
 
 import (
-	"bugtracker/internal/domain/bug/core/domain/entity"
 	"time"
+
+	"github.com/R894/bugtracker/internal/domain/bug/core/domain/entity"
 
 	"github.com/google/uuid"
 )
@@ -52,8 +53,18 @@ func NewBug(req CreateBugRequest) *Bug {
 }
 
 func (b *Bug) UpdateDetails(title, description string) {
-	b.Title = title
-	b.Description = description
+	if title == "" && description == "" {
+		return // No need to update if both title and description are empty
+	}
+	if title == b.Title && description == b.Description {
+		return // No need to update if both title and description are the same
+	}
+	if title != "" {
+		b.Title = title
+	}
+	if description != "" {
+		b.Description = description
+	}
 	b.UpdatedAt = time.Now()
 }
 
@@ -64,6 +75,11 @@ func (b *Bug) ChangeStatus(status entity.BugStatus) {
 
 func (b *Bug) AssignTo(assignee string) {
 	b.Assignee = assignee
+	b.UpdatedAt = time.Now()
+}
+
+func (b *Bug) UpdatePriority(priority entity.BugPriority) {
+	b.Priority = priority
 	b.UpdatedAt = time.Now()
 }
 
