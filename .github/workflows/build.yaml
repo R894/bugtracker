@@ -1,8 +1,8 @@
-name: Build and Test Backend
+name: Test Backend
 on: [push, pull_request]
 jobs:
   build:
-    name: Build and Test
+    name: Test Backend
     runs-on: ubuntu-latest
     steps:
       - name: Checkout server code
@@ -11,7 +11,5 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: '1.21.5'
-      - name: Build
-        run: go build ./server/cmd
       - name: Test
         run: go test ./server/...
