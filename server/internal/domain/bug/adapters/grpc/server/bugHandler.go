@@ -1,9 +1,10 @@
 package grpc
 
 import (
-	"bugtracker/internal/domain/bug/core/domain/aggregate"
-	"bugtracker/internal/domain/bug/ports"
 	"context"
+
+	"github.com/R894/bugtracker/internal/domain/bug/core/domain/aggregate"
+	"github.com/R894/bugtracker/internal/domain/bug/ports"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 )

@@ -1,10 +1,11 @@
 package grpc
 
 import (
-	"bugtracker/internal/domain/bug/core/service"
-	"bugtracker/internal/domain/bug/ports"
 	"log"
 	"net"
+
+	"github.com/R894/bugtracker/internal/domain/bug/core/service"
+	"github.com/R894/bugtracker/internal/domain/bug/ports"
 
 	"google.golang.org/grpc"
 )
