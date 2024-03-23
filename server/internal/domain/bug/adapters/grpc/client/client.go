@@ -1,34 +1,31 @@
 package client
 
 import (
-	"bugtracker/internal/domain/bug/ports"
 	"context"
-	"log"
+
+	"github.com/R894/bugtracker/internal/domain/bug/ports"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func GetBugsByProjectID(c ports.BugRepositoryServiceClient, req *ports.GetBugsByProjectIDRequest) (*ports.GetBugsByProjectIDResponse, error) {
-	return c.GetBugsByProjectID(context.TODO(), req)
+func GetBugsByProjectID(client ports.BugRepositoryServiceClient, request *ports.GetBugsByProjectIDRequest) (*ports.GetBugsByProjectIDResponse, error) {
+	return client.GetBugsByProjectID(context.Background(), request)
 }
 
-func AssignBugTo(c ports.BugRepositoryServiceClient, req *ports.AssignBugToRequest) (*ports.EmptyResponse, error) {
-	return c.AssignBugTo(context.TODO(), req)
+func AssignBugTo(client ports.BugRepositoryServiceClient, request *ports.AssignBugToRequest) (*ports.EmptyResponse, error) {
+	return client.AssignBugTo(context.Background(), request)
 }
 
-func GetBugByID(c ports.BugRepositoryServiceClient, req *ports.GetBugByIDRequest) (*ports.BugResponse, error) {
-	return c.GetBugByID(context.TODO(), req)
+func GetBugByID(client ports.BugRepositoryServiceClient, request *ports.GetBugByIDRequest) (*ports.BugResponse, error) {
+	return client.GetBugByID(context.Background(), request)
 }
 
-func GrpcClient(addr string) ports.BugRepositoryServiceClient {
-	opts := []grpc.DialOption{
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	}
-
+func NewGrpcClient(addr string) ports.BugRepositoryServiceClient {
+	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 	conn, err := grpc.Dial(addr, opts...)
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		return nil
 	}
 	return ports.NewBugRepositoryServiceClient(conn)
 }
