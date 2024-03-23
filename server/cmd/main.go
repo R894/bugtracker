@@ -1,11 +1,12 @@
 package main
 
 import (
-	config "bugtracker"
-	"bugtracker/internal/database"
-	"bugtracker/internal/web"
-	"bugtracker/storage"
 	"log"
+
+	config "github.com/R894/bugtracker"
+	"github.com/R894/bugtracker/internal/database"
+	"github.com/R894/bugtracker/internal/web"
+	"github.com/R894/bugtracker/storage"
 )
 
 func main() {
