@@ -1,10 +1,11 @@
 package service
 
 import (
-	"bugtracker/internal/domain/comment/aggregate"
-	"bugtracker/internal/domain/comment/repository"
 	"context"
 	"database/sql"
+
+	"github.com/R894/bugtracker/internal/domain/comment/aggregate"
+	"github.com/R894/bugtracker/internal/domain/comment/repository"
 )
 
 type CommentService struct {

@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"bugtracker/internal/web/response"
 	"context"
 	"errors"
 	"log"
@@ -9,6 +8,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/R894/bugtracker/internal/web/response"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/golang-jwt/jwt/v5"

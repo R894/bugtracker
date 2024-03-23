@@ -1,8 +1,9 @@
 package ports
 
 import (
-	"bugtracker/internal/domain/bug/core/domain/aggregate"
 	"context"
+
+	"github.com/R894/bugtracker/internal/domain/bug/core/domain/aggregate"
 )
 
 type BugRepository interface {

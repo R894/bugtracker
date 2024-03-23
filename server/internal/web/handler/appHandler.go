@@ -1,11 +1,12 @@
 package handler
 
 import (
-	"bugtracker/internal/domain/bug/core/service"
-	commentService "bugtracker/internal/domain/comment/service"
-	projectService "bugtracker/internal/domain/project/service"
-	userService "bugtracker/internal/domain/user/service"
 	"database/sql"
+
+	"github.com/R894/bugtracker/internal/domain/bug/core/service"
+	commentService "github.com/R894/bugtracker/internal/domain/comment/service"
+	projectService "github.com/R894/bugtracker/internal/domain/project/service"
+	userService "github.com/R894/bugtracker/internal/domain/user/service"
 
 	"github.com/go-playground/locales/en"
 	ut "github.com/go-playground/universal-translator"

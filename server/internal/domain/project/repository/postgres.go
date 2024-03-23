@@ -1,9 +1,10 @@
 package repository
 
 import (
-	"bugtracker/internal/domain/project/aggregate"
 	"context"
 	"database/sql"
+
+	"github.com/R894/bugtracker/internal/domain/project/aggregate"
 
 	sq "github.com/Masterminds/squirrel"
 )

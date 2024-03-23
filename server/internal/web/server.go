@@ -1,12 +1,13 @@
 package web
 
 import (
-	"bugtracker/internal/web/router"
 	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/R894/bugtracker/internal/web/router"
 )
 
 func StartServer(db *sql.DB) error {

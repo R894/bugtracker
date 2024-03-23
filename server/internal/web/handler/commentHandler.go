@@ -1,12 +1,13 @@
 package handler
 
 import (
-	"bugtracker/internal/domain/comment/service"
-	"bugtracker/internal/web/middleware"
-	"bugtracker/internal/web/response"
 	"encoding/json"
 	"log"
 	"net/http"
+
+	"github.com/R894/bugtracker/internal/domain/comment/service"
+	"github.com/R894/bugtracker/internal/web/middleware"
+	"github.com/R894/bugtracker/internal/web/response"
 
 	"github.com/go-chi/chi/v5"
 	ut "github.com/go-playground/universal-translator"

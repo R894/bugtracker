@@ -1,10 +1,11 @@
 package router
 
 import (
-	"bugtracker/internal/web/handler"
 	"database/sql"
 
-	mw "bugtracker/internal/web/middleware"
+	"github.com/R894/bugtracker/internal/web/handler"
+
+	mw "github.com/R894/bugtracker/internal/web/middleware"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"

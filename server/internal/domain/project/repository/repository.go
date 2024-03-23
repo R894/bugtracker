@@ -1,8 +1,9 @@
 package repository
 
 import (
-	"bugtracker/internal/domain/project/aggregate"
 	"context"
+
+	"github.com/R894/bugtracker/internal/domain/project/aggregate"
 )
 
 type Repository interface {

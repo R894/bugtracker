@@ -1,4 +1,4 @@
-module bugtracker
+module github.com/R894/bugtracker
 
 go 1.21.5
 

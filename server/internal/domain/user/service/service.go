@@ -1,10 +1,11 @@
 package service
 
 import (
-	"bugtracker/internal/domain/user/aggregate"
-	"bugtracker/internal/domain/user/repository"
 	"context"
 	"database/sql"
+
+	"github.com/R894/bugtracker/internal/domain/user/aggregate"
+	"github.com/R894/bugtracker/internal/domain/user/repository"
 )
 
 type UserService struct {

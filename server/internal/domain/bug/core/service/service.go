@@ -1,11 +1,12 @@
 package service
 
 import (
-	"bugtracker/internal/domain/bug/adapters/repository"
-	"bugtracker/internal/domain/bug/core/domain/aggregate"
-	"bugtracker/internal/domain/bug/ports"
 	"context"
 	"database/sql"
+
+	"github.com/R894/bugtracker/internal/domain/bug/adapters/repository"
+	"github.com/R894/bugtracker/internal/domain/bug/core/domain/aggregate"
+	"github.com/R894/bugtracker/internal/domain/bug/ports"
 )
 
 type BugService struct {

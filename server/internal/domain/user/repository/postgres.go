@@ -1,11 +1,12 @@
 package repository
 
 import (
-	"bugtracker/internal/domain/user/aggregate"
 	"context"
 	"database/sql"
 	"log"
 	"time"
+
+	"github.com/R894/bugtracker/internal/domain/user/aggregate"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/lib/pq"

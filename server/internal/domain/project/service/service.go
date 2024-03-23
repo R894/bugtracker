@@ -1,10 +1,11 @@
 package service
 
 import (
-	"bugtracker/internal/domain/project/aggregate"
-	"bugtracker/internal/domain/project/repository"
 	"context"
 	"database/sql"
+
+	"github.com/R894/bugtracker/internal/domain/project/aggregate"
+	"github.com/R894/bugtracker/internal/domain/project/repository"
 )
 
 type ProjectService struct {
