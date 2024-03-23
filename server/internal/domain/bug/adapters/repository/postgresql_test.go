@@ -1,12 +1,14 @@
 package repository
 
 import (
-	config "bugtracker"
-	"bugtracker/internal/database"
-	"bugtracker/internal/domain/bug/core/domain/aggregate"
 	"context"
 	"log"
 	"testing"
+
+	"github.com/R894/bugtracker/internal/domain/bug/core/domain/aggregate"
+
+	config "github.com/R894/bugtracker"
+	"github.com/R894/bugtracker/internal/database"
 
 	"github.com/stretchr/testify/assert"
 )
