@@ -4,12 +4,13 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/R894/bugtracker/internal/domain/comment/aggregate"
-	"github.com/R894/bugtracker/internal/domain/comment/repository"
+	repository "github.com/R894/bugtracker/internal/domain/comment/adapters"
+	"github.com/R894/bugtracker/internal/domain/comment/core/domain/aggregate"
+	"github.com/R894/bugtracker/internal/domain/comment/ports"
 )
 
 type CommentService struct {
-	repo repository.CommentRepository
+	repo ports.CommentRepository
 }
 
 func NewCommentService(db *sql.DB) *CommentService {

@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/R894/bugtracker/internal/domain/comment/service"
+	"github.com/R894/bugtracker/internal/domain/comment/core/service"
 	"github.com/R894/bugtracker/internal/web/middleware"
 	"github.com/R894/bugtracker/internal/web/response"
 

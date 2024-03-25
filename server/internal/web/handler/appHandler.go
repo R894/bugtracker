@@ -4,7 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/R894/bugtracker/internal/domain/bug/core/service"
-	commentService "github.com/R894/bugtracker/internal/domain/comment/service"
+	commentService "github.com/R894/bugtracker/internal/domain/comment/core/service"
 	projectService "github.com/R894/bugtracker/internal/domain/project/service"
 	userService "github.com/R894/bugtracker/internal/domain/user/service"
 

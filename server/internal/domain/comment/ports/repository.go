@@ -1,9 +1,9 @@
-package repository
+package ports
 
 import (
 	"context"
 
-	"github.com/R894/bugtracker/internal/domain/comment/aggregate"
+	"github.com/R894/bugtracker/internal/domain/comment/core/domain/aggregate"
 )
 
 type CommentRepository interface {
