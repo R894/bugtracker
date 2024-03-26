@@ -11,7 +11,7 @@ export default function Home() {
   const { token } = useUserContext()
   return (
     <Layout>
-      <Stack width={'100%'} minWidth={'320px'} gap={1}>
+      <Stack width={'50%'} minWidth={'320px'} gap={1}>
         {router.query.slug && <BugForm bugId={router.query.slug as string} />}
         <CommentList bugId={router.query.slug as string} token={token} />
         <CommentForm bugId={router.query.slug as string} token={token} />
