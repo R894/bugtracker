@@ -9,7 +9,7 @@ const CommentContainer = ({ comment }: { comment: Comment }) => {
     <Paper sx={{ padding: '40px 20px' }}>
       <Grid container wrap="nowrap" spacing={2}>
         <Grid justifyContent="left" item xs zeroMinWidth>
-          <h4 style={{ margin: 0, textAlign: 'left' }}>Michel Michel</h4>
+          <h4 style={{ margin: 0, textAlign: 'left' }}>{comment.userId}</h4>
           <p style={{ textAlign: 'left' }}>{comment.content}</p>
           <p style={{ textAlign: 'left' }}>
             {moment(comment.createdAt).format('MMM Do YY')}
