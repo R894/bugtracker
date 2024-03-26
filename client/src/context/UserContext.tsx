@@ -11,7 +11,7 @@ export type UserContextType = {
   loginUser: typeof postLogin
   registerUser: typeof createUser
   logoutUser: () => void
-  updateUserProjects: () => {}
+  updateUserProjects: () => void
   selectedProject: Project | null
   // eslint-disable-next-line no-unused-vars
   setCurrentProject: (project: Project) => void
