@@ -13,7 +13,8 @@ export type UserContextType = {
   logoutUser: () => void
   updateUserProjects: () => {}
   selectedProject: Project | null
-  setSelectedProject: React.Dispatch<React.SetStateAction<Project | null>>
+  // eslint-disable-next-line no-unused-vars
+  setCurrentProject: (project: Project) => void
 }
 
 export const UserContext = React.createContext<UserContextType | null>(null)
@@ -27,19 +28,14 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
-    const t = localStorage.getItem('token')
-    if (t && t != '') {
-      setToken(t)
-      setIsLoggedIn(true)
-    }
-  }, [])
+    const storedToken = localStorage.getItem('token')
+    const storedUser = localStorage.getItem('user')
+    const storedProject = localStorage.getItem('project')
 
-  useEffect(() => {
-    const u = localStorage.getItem('user')
-    if (u && u != '') {
-      console.log(JSON.parse(u))
-      setUser(JSON.parse(u))
-    }
+    setToken(storedToken || '')
+    setUser(storedUser ? JSON.parse(storedUser) : null)
+    setSelectedProject(storedProject ? JSON.parse(storedProject) : null)
+    setIsLoggedIn(!!storedToken)
   }, [])
 
   const updateUserProjects = useCallback(async () => {
@@ -62,6 +58,12 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     console.log(user?.projects)
   }, [user])
+
+  const setCurrentProject = useCallback((project: Project) => {
+    console.log(project)
+    setSelectedProject(project)
+    localStorage.setItem('project', JSON.stringify(project))
+  },[])
 
   const loginUser = async (loginRequest: LoginRequest) => {
     setIsLoggedIn(false)
@@ -92,6 +94,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsLoggedIn(false)
     setToken('')
     setUser(null)
+    setSelectedProject(null)
     localStorage.removeItem('token')
   }
 
@@ -106,7 +109,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         logoutUser,
         token,
         selectedProject,
-        setSelectedProject,
+        setCurrentProject,
       }}
     >
       {children}

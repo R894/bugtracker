@@ -8,10 +8,10 @@ import CreateProjectModal from './CreateProjectModal'
 import { Stack } from '@mui/material'
 import CreateBugModal from './CreateBugModal'
 
-const DashboardDisplay = () => {
+const DashboardDisplay = ({projectId}:{projectId?: string}) => {
   const {
     selectedProject,
-    setSelectedProject,
+    setCurrentProject,
     updateUserProjects,
     user,
     token,
@@ -25,17 +25,27 @@ const DashboardDisplay = () => {
   }, [])
 
   useEffect(() => {
-    if (!token || selectedProject == null) return
+    if (!projectId) {
+      const cachedProject = localStorage.getItem('project')
+      if (cachedProject) {
+        setCurrentProject(JSON.parse(cachedProject))
+      }
+    }
+  }, [projectId, setCurrentProject])
+
+  useEffect(() => {
+    if (!token) return
+    if (!selectedProject) return
     const getBugs = async () => {
-      const response = await getBugsByProjectId(selectedProject.id, token)
-      if (response && response.code == 401) {
+      const response = await getBugsByProjectId(projectId? projectId: selectedProject.id, token)
+      if (response?.code == 401) {
         logoutUser()
         return
       }
       setBugs(response)
     }
     getBugs()
-  }, [selectedProject, token, logoutUser])
+  }, [logoutUser, projectId, selectedProject, token])
 
   return (
     <>
@@ -46,7 +56,7 @@ const DashboardDisplay = () => {
               selectedProject ? selectedProject.name : 'Select Project'
             }
             projects={user ? user.projects : []}
-            stateChanger={setSelectedProject}
+            stateChanger={setCurrentProject}
           />
           <CreateProjectModal />
           {selectedProject ? (
