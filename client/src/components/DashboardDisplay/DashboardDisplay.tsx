@@ -7,6 +7,7 @@ import { Bug } from '@/api/models/bug'
 import CreateProjectModal from './CreateProjectModal'
 import { Stack } from '@mui/material'
 import CreateBugModal from './CreateBugModal'
+import { useRouter } from 'next/router'
 
 const DashboardDisplay = ({projectId}:{projectId?: string}) => {
   const {
@@ -18,11 +19,18 @@ const DashboardDisplay = ({projectId}:{projectId?: string}) => {
     logoutUser,
   } = useUserContext()
   const [bugs, setBugs] = useState<Bug[]>([])
+  const router = useRouter()
 
   useEffect(() => {
     updateUserProjects()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(()=> {
+    if (!user) {
+      router.push('/login')
+    }
+  },[user, router])
 
   useEffect(() => {
     if (!projectId) {
