@@ -7,6 +7,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { FormEvent, useContext, useState } from 'react'
 
@@ -67,6 +68,7 @@ const LoginForm = () => {
           <Button variant="contained" type="submit">
             Login
           </Button>
+          <Typography sx={{ textAlign: 'right' }}>No Account? <Link href={'/register'}>Register here</Link></Typography>
           <Alert severity="error" sx={{ display: error ? 'flex' : 'none' }}>
             Error: {errMessage}
           </Alert>
