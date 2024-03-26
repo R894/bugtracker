@@ -64,7 +64,7 @@ func (c *PostgresCommentRepository) GetCommentsByBugId(ctx context.Context, bugI
 	var comments []aggregate.Comment
 	for rows.Next() {
 		var comment aggregate.Comment
-		if err := rows.Scan(&comment.ID, &comment.BugId, &comment.UserId, &comment.Content, &comment.CreatedAt, &comment.UpdatedAt); err != nil {
+		if err := rows.Scan(&comment.ID, &comment.BugId, &comment.Content, &comment.CreatedAt, &comment.UpdatedAt, &comment.UserId); err != nil {
 			return nil, err
 		}
 		comments = append(comments, comment)
