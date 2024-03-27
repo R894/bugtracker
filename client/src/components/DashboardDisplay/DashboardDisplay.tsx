@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import BugList from './BugList'
+import BugTable from './BugTable'
 import ProjectsMenu from './ProjectsMenu'
 import { useUserContext } from '@/context/UserContext'
 import { getBugsByProjectId } from '@/api/bugService'
@@ -71,7 +71,7 @@ const DashboardDisplay = ({projectId}:{projectId?: string}) => {
             <CreateBugModal projectId={selectedProject.id} />
           ) : null}
         </Stack>
-        <BugList bugs={bugs} />
+        <BugTable bugs={bugs} />
       </div>
     </>
   )
