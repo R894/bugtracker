@@ -55,10 +55,6 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     setUser((prevUser) => ({ ...prevUser, projects: response }) as User)
   }, [token, user])
 
-  useEffect(() => {
-    console.log(user?.projects)
-  }, [user])
-
   const setCurrentProject = useCallback((project: Project) => {
     console.log(project)
     setSelectedProject(project)
