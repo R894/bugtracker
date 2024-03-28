@@ -1,8 +1,13 @@
-import { Project } from '@/api/models/project'
 import { LoginRequest, RegisterRequest, User } from '@/api/models/user'
-import { getProjectsByUsername } from '@/api/projectService'
 import { createUser, postLogin } from '@/api/userService'
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, {
+  type FC,
+  type ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 
 export type UserContextType = {
   token: string
@@ -11,55 +16,27 @@ export type UserContextType = {
   loginUser: typeof postLogin
   registerUser: typeof createUser
   logoutUser: () => void
-  updateUserProjects: () => void
-  selectedProject: Project | null
-  // eslint-disable-next-line no-unused-vars
-  setCurrentProject: (project: Project) => void
 }
 
-export const UserContext = React.createContext<UserContextType | null>(null)
+export const UserContext = createContext<UserContextType | null>(null)
 
-const UserProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+const UserProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [token, setToken] = useState('')
   const [user, setUser] = useState<User | null>(null)
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  useEffect(() => {
+  const initializeUser = () => {
     const storedToken = localStorage.getItem('token')
     const storedUser = localStorage.getItem('user')
-    const storedProject = localStorage.getItem('project')
 
     setToken(storedToken || '')
     setUser(storedUser ? JSON.parse(storedUser) : null)
-    setSelectedProject(storedProject ? JSON.parse(storedProject) : null)
     setIsLoggedIn(!!storedToken)
+  }
+
+  useEffect(() => {
+    initializeUser()
   }, [])
-
-  const updateUserProjects = useCallback(async () => {
-    if (!user || !user.id || !token) return
-    const response = await getProjectsByUsername(user.username, token)
-    console.log(response)
-    if (response.code == 401) {
-      logoutUser()
-      return
-    }
-    if (response.error) {
-      return
-    }
-    let u = JSON.parse(localStorage.getItem('user') || '')
-    u.projects = response
-    localStorage.setItem('user', JSON.stringify(u))
-    setUser((prevUser) => ({ ...prevUser, projects: response }) as User)
-  }, [token, user])
-
-  const setCurrentProject = useCallback((project: Project) => {
-    console.log(project)
-    setSelectedProject(project)
-    localStorage.setItem('project', JSON.stringify(project))
-  },[])
 
   const loginUser = async (loginRequest: LoginRequest) => {
     setIsLoggedIn(false)
@@ -90,7 +67,6 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsLoggedIn(false)
     setToken('')
     setUser(null)
-    setSelectedProject(null)
     localStorage.removeItem('token')
   }
 
@@ -100,12 +76,9 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         loginUser,
         user,
         registerUser,
-        updateUserProjects,
         isLoggedIn,
         logoutUser,
         token,
-        selectedProject,
-        setCurrentProject,
       }}
     >
       {children}

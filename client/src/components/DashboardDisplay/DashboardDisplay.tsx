@@ -8,16 +8,15 @@ import CreateProjectModal from './CreateProjectModal'
 import { Stack } from '@mui/material'
 import CreateBugModal from './CreateBugModal'
 import { useRouter } from 'next/router'
+import { useProjectContext } from '@/context/ProjectContext'
 
 const DashboardDisplay = ({projectId}:{projectId?: string}) => {
   const {
-    selectedProject,
-    setCurrentProject,
-    updateUserProjects,
     user,
     token,
     logoutUser,
   } = useUserContext()
+  const {selectedProject, setCurrentProject, updateUserProjects, getProjects} = useProjectContext()
   const [bugs, setBugs] = useState<Bug[]>([])
   const router = useRouter()
 
@@ -63,7 +62,7 @@ const DashboardDisplay = ({projectId}:{projectId?: string}) => {
             buttonText={
               selectedProject ? selectedProject.name : 'Select Project'
             }
-            projects={user ? user.projects : []}
+            projects={user ? getProjects() : []}
             stateChanger={setCurrentProject}
           />
           <CreateProjectModal />
