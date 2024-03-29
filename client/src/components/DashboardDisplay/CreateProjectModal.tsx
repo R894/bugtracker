@@ -2,9 +2,10 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Modal from '@mui/material/Modal'
 import { TextField, Typography } from '@mui/material'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { createProject } from '@/api/projectService'
-import { UserContext, UserContextType } from '@/context/UserContext'
+import { useUserContext } from '@/context/UserContext'
+import { useProjectContext } from '@/context/ProjectContext'
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -23,7 +24,8 @@ const CreateProjectModal = () => {
   const [open, setOpen] = useState(false)
   const [projectName, setProjectName] = useState('')
   const [projectDescription, setProjectDescription] = useState('')
-  const {token, updateUserProjects} = useContext(UserContext) as UserContextType
+  const {token} = useUserContext()
+  const {updateUserProjects} = useProjectContext()
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
