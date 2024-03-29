@@ -1,4 +1,4 @@
-name: Test Backend
+name: Test
 on: [push, pull_request]
 jobs:
   test:
@@ -14,3 +14,14 @@ jobs:
       - name: Test
         working-directory: ./server
         run: go test ./...
+
+  test-frontend:
+    name: Test Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout frontend code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm install
+      - name: Test
+        run: npm test
