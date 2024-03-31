@@ -1,6 +1,8 @@
 import { Box, Button, Typography } from '@mui/material'
+import { useRouter } from 'next/router'
 
 const Hero = () => {
+  const router = useRouter()
   return (
     <Box
       sx={{
@@ -16,11 +18,17 @@ const Hero = () => {
     >
       <Typography variant="h1">BugTracker</Typography>
       <Typography variant="h6" style={{ opacity: '80%', textAlign: 'center' }}>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
+        BugTracker centralizes communication, allowing teams to collaborate
+        effortlessly and keep everyone on the same page.
       </Typography>
-      <Button style={{ width: '160px' }} variant="contained">
-        Pricing
+      <Button
+        style={{ width: '160px' }}
+        variant="contained"
+        onClick={() => {
+          router.push('/register')
+        }}
+      >
+        Start Tracking
       </Button>
     </Box>
   )
