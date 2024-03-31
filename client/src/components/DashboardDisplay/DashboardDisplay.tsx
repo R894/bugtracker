@@ -5,18 +5,19 @@ import { useUserContext } from '@/context/UserContext'
 import { getBugsByProjectId } from '@/api/bugService'
 import { Bug } from '@/api/models/bug'
 import CreateProjectModal from './CreateProjectModal'
-import { Stack } from '@mui/material'
+import { Input, Stack } from '@mui/material'
 import CreateBugModal from './CreateBugModal'
 import { useRouter } from 'next/router'
 import { useProjectContext } from '@/context/ProjectContext'
 
-const DashboardDisplay = ({projectId}:{projectId?: string}) => {
+const DashboardDisplay = ({ projectId }: { projectId?: string }) => {
+  const { user, token, logoutUser } = useUserContext()
   const {
-    user,
-    token,
-    logoutUser,
-  } = useUserContext()
-  const {selectedProject, setCurrentProject, updateUserProjects, getProjects} = useProjectContext()
+    selectedProject,
+    setCurrentProject,
+    updateUserProjects,
+    getProjects,
+  } = useProjectContext()
   const [bugs, setBugs] = useState<Bug[]>([])
   const router = useRouter()
 
@@ -25,11 +26,11 @@ const DashboardDisplay = ({projectId}:{projectId?: string}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(()=> {
+  useEffect(() => {
     if (!user) {
       router.push('/login')
     }
-  },[user, router])
+  }, [user, router])
 
   useEffect(() => {
     if (!projectId) {
@@ -44,7 +45,10 @@ const DashboardDisplay = ({projectId}:{projectId?: string}) => {
     if (!token) return
     if (!selectedProject) return
     const getBugs = async () => {
-      const response = await getBugsByProjectId(projectId? projectId: selectedProject.id, token)
+      const response = await getBugsByProjectId(
+        projectId ? projectId : selectedProject.id,
+        token,
+      )
       if (response?.code == 401) {
         logoutUser()
         return
@@ -57,14 +61,13 @@ const DashboardDisplay = ({projectId}:{projectId?: string}) => {
   return (
     <>
       <div style={{ padding: '16px' }}>
+        <ProjectsMenu
+          buttonText={selectedProject ? selectedProject.name : 'Select Project'}
+          projects={user ? getProjects() : []}
+          stateChanger={setCurrentProject}
+        />
         <Stack direction={'row'}>
-          <ProjectsMenu
-            buttonText={
-              selectedProject ? selectedProject.name : 'Select Project'
-            }
-            projects={user ? getProjects() : []}
-            stateChanger={setCurrentProject}
-          />
+          <Input sx={{ flex: 1 }}></Input>
           <CreateProjectModal />
           {selectedProject ? (
             <CreateBugModal projectId={selectedProject.id} />
