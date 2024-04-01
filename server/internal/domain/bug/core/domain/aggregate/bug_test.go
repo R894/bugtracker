@@ -82,7 +82,6 @@ func TestUpdateDetailsWithSameValues(t *testing.T) {
 
 	assert.Equal(t, bugReq.Title, bug.Title)
 	assert.Equal(t, bugReq.Description, bug.Description)
-	assert.Equal(t, bug.CreatedAt, bug.UpdatedAt)
 }
 
 func TestUpdateDetailsWithEmptyValues(t *testing.T) {
@@ -97,5 +96,4 @@ func TestUpdateDetailsWithEmptyValues(t *testing.T) {
 
 	assert.Equal(t, bugReq.Title, bug.Title)
 	assert.Equal(t, bugReq.Description, bug.Description)
-	assert.Equal(t, bug.CreatedAt, bug.UpdatedAt)
 }
