@@ -2,24 +2,18 @@ package repository
 
 import (
 	"context"
-	"log"
 	"testing"
 
 	"github.com/R894/bugtracker/internal/domain/bug/core/domain/aggregate"
 
 	config "github.com/R894/bugtracker"
-	"github.com/R894/bugtracker/internal/database"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSaveBug(t *testing.T) {
 	config.FetchEnvVars()
-	db, err := database.NewPostgresTestDB()
-	if err != nil {
-		log.Fatal("Error setting up test database: ", err)
-	}
-	repo := NewPostgresBugRepository(db.Db)
+	repo := NewInMemoryBugRepository()
 	ctx := context.Background()
 
 	req := aggregate.CreateBugRequest{
@@ -29,7 +23,7 @@ func TestSaveBug(t *testing.T) {
 	}
 	bug := aggregate.NewBug(req)
 
-	err = repo.SaveBug(ctx, bug)
+	err := repo.SaveBug(ctx, bug)
 	assert.Nil(t, err)
 
 	fetchedBug, err := repo.GetBugByID(ctx, bug.ID)
