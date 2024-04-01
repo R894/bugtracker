@@ -6,13 +6,10 @@ import (
 
 	"github.com/R894/bugtracker/internal/domain/bug/core/domain/aggregate"
 
-	config "github.com/R894/bugtracker"
-
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSaveBug(t *testing.T) {
-	config.FetchEnvVars()
 	repo := NewInMemoryBugRepository()
 	ctx := context.Background()
 
