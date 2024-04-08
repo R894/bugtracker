@@ -1,8 +1,10 @@
+import { useUserContext } from '@/context/UserContext'
 import { Box, Button, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 
 const Hero = () => {
   const router = useRouter()
+  const { isLoggedIn } = useUserContext()
   return (
     <Box
       sx={{
@@ -25,7 +27,7 @@ const Hero = () => {
         style={{ width: '160px' }}
         variant="contained"
         onClick={() => {
-          router.push('/register')
+          isLoggedIn ? router.push('/dashboard') : router.push('/register')
         }}
       >
         Start Tracking
